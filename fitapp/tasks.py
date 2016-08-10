@@ -26,7 +26,7 @@ def subscribe(fitbit_user, subscriber_id):
     for fbuser in fbusers:
         fb = utils.create_fitbit(**fbuser.get_user_data())
         try:
-            fb.subscription(fbuser.user.id, subscriber_id)
+            fb.subscription(str(fbuser.user.id), str(subscriber_id), collection="activities")
         except:
             exc = sys.exc_info()[1]
             logger.exception("Error subscribing user: %s" % exc)
