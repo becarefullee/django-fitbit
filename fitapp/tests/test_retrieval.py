@@ -249,14 +249,6 @@ class RetrievalViewTestBase(object):
         self._check_response(response, 101)
         self.assertEqual(UserFitbit.objects.count(), 1)
 
-    def test_not_active(self):
-        """Status code should be 101 when user isn't active."""
-        self.user.is_active = False
-        self.user.save()
-        response = self._get(get_kwargs=self._data())
-        self._check_response(response, 101)
-        self.assertEqual(UserFitbit.objects.count(), 1)
-
     @override_settings(FITAPP_SUBSCRIBE=False)
     def test_not_integrated(self):
         """

@@ -6,6 +6,8 @@ from django.http import HttpRequest
 from fitbit.exceptions import HTTPConflict
 from mock import patch
 
+from test_models import TestUserModel
+
 from fitapp import utils
 from fitapp.decorators import fitbit_integration_warning
 from fitapp.models import UserFitbit, TimeSeriesDataType
@@ -27,7 +29,7 @@ class TestIntegrationUtility(FitappTestBase):
 
     def test_unauthenticated(self):
         """User is not integrated if they aren't logged in."""
-        user = AnonymousUser()
+        user = self.create_user()
         self.assertFalse(utils.is_integrated(user))
 
 
@@ -50,7 +52,7 @@ class TestIntegrationDecorator(FitappTestBase):
 
     def test_unauthenticated(self):
         """Message should be added if user is not logged in."""
-        self.fake_request.user = AnonymousUser()
+        self.fake_request.user = self.create_user()
         results = self._mock_decorator()
 
         self.assertEqual(results, "hello")

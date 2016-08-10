@@ -8,7 +8,6 @@ class TestFitappModels(FitappTestBase):
     def test_userfitbit(self):
         """ UserFitbit was already created in base, now test the properties """
         self.assertEqual(self.fbuser.user, self.user)
-        self.assertEqual(self.fbuser.__str__(), self.username)
         self.assertEqual(self.fbuser.get_user_data(), {
             'access_token': self.fbuser.access_token,
             'refresh_token': self.fbuser.refresh_token,
