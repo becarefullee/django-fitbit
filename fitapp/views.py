@@ -1,4 +1,5 @@
 import simplejson as json
+import logging
 
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
@@ -22,6 +23,8 @@ from . import utils
 from .models import UserFitbit, TimeSeriesData, TimeSeriesDataType
 from .tasks import get_time_series_data, subscribe, unsubscribe
 
+
+logger = logging.getLogger(__name__)
 
 class conditional_decorator:
     """
@@ -102,6 +105,7 @@ def complete(request):
     try:
         code = request.GET['code']
     except KeyError:
+        logger.exception("Error in views.complete: request has no code.")
         return redirect(reverse('fitbit-error'))
 
     callback_uri = request.build_absolute_uri(reverse('fitbit-complete'))
@@ -113,11 +117,16 @@ def complete(request):
         user = user_model.objects.get(pk=fb_user_id)
         fitbit_user = token['user_id']
     except KeyError:
+        logger.exception("Error in views.complete: KeyError")
         return redirect(reverse('fitbit-error'))
     except TypeError:
+        logger.exception("Error in views.complete: TypeError")
         return redirect(reverse('fitbit-error'))
 
     if UserFitbit.objects.filter(fitbit_user=fitbit_user).exists():
+        current_fbuser = UserFitbit.objects.filter(fitbit_user=fitbit_user).first()
+        logger.exception("Error in views.complete: %s already exists "
+                         "with the same fitbit_user as %s." % (current_fbuser, user))
         return redirect(reverse('fitbit-error'))
 
     fbuser, _ = UserFitbit.objects.get_or_create(user=user)
@@ -132,6 +141,8 @@ def complete(request):
         try:
             SUBSCRIBER_ID = utils.get_setting('FITAPP_SUBSCRIBER_ID')
         except ImproperlyConfigured:
+            logger.exception("Error for fbuser %s in views.complete: "
+                             "No SUBSCRIBER_ID configured." % fbuser)
             return redirect(reverse('fitbit-error'))
         subscribe.apply_async((fbuser.fitbit_user, SUBSCRIBER_ID),
                               countdown=5)
@@ -205,8 +216,10 @@ def logout(request):
         fb_user_id = request.session.get('fb_user_id')
         user = user_model.objects.get(pk=fb_user_id)
     except KeyError:
+        logger.exception("Error in views.logout: No fb_user_id in request.session.")
         return redirect(reverse('fitbit-error'))
     except user_model.DoesNotExist:
+        logger.exception("Error in views.logout: No invalid fb_user id %s" % fb_user_id)
         return redirect(reverse('fitbit-error'))
     try:
         fbuser = user.userfitbit
@@ -217,6 +230,7 @@ def logout(request):
             try:
                 SUBSCRIBER_ID = utils.get_setting('FITAPP_SUBSCRIBER_ID')
             except ImproperlyConfigured:
+                logger.exception("Error in view.logout: No FITAPP_SUBSCRIBER_ID configured.")
                 return redirect(reverse('fitbit-error'))
             unsubscribe.apply_async(kwargs=fbuser.get_user_data(), countdown=5)
         fbuser.delete()

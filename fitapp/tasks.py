@@ -29,7 +29,7 @@ def subscribe(fitbit_user, subscriber_id):
             fb.subscription(fbuser.user.id, subscriber_id)
         except:
             exc = sys.exc_info()[1]
-            logger.exception("Error subscribing user %s: %s" % (fitbit_user, exc))
+            logger.exception("Error subscribing fbuser %s: %s" % (fbuser, exc))
             raise Reject(exc, requeue=False)
 
 
@@ -111,8 +111,8 @@ def get_time_series_data(fitbit_user, cat, resource, date=None):
         # We have hit the rate limit for the user, retry when it's reset,
         # according to the reply from the failing API call
         e = sys.exc_info()[1]
-        logger.debug('Rate limit reached for user %s, will try again in %s seconds' %
-                     (fitbit_user, e.retry_after_secs))
+        logger.debug('Rate limit reached for fbuser %s, will try again in %s seconds' %
+                     (fbuser, e.retry_after_secs))
         raise get_time_series_data.retry(exc=e, countdown=e.retry_after_secs)
     except HTTPBadRequest:
         # If the resource is elevation or floors, we are just getting this
