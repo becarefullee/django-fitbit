@@ -67,6 +67,7 @@ def login(request):
         request.session.pop('fitbit_next', None)
 
     callback_uri = request.build_absolute_uri(reverse('fitbit-complete'))
+
     fb = utils.create_fitbit(callback_uri=callback_uri)
     token_url, code = fb.client.authorize_token_url(redirect_uri=callback_uri, prompt="login consent")
 
