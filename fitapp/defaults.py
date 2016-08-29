@@ -46,3 +46,7 @@ FITAPP_SAVE_INTRADAY_ZERO_VALUES = False
 
 # The default amount of data we pull for each user registered with this app
 FITAPP_DEFAULT_PERIOD = 'max'
+
+# The collection we want to recieve subscription updates for
+# (e.g. 'activities'). None defaults to all collections.
+FITAPP_SUBSCRIPTION_COLLECTION = None
