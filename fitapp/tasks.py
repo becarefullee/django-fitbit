@@ -23,10 +23,11 @@ def subscribe(fitbit_user, subscriber_id):
     """ Subscribe to the user's fitbit data """
 
     fbusers = UserFitbit.objects.filter(fitbit_user=fitbit_user)
+    collection = utils.get_setting('FITAPP_COLLECTION')
     for fbuser in fbusers:
         fb = utils.create_fitbit(**fbuser.get_user_data())
         try:
-            fb.subscription(str(fbuser.user.id), str(subscriber_id), collection="activities")
+            fb.subscription(str(fbuser.user.id), str(subscriber_id), collection=collection)
         except:
             exc = sys.exc_info()[1]
             logger.exception("Error subscribing fbuser %s: %s" % (fbuser, exc))
