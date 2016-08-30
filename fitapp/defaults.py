@@ -46,3 +46,7 @@ FITAPP_SAVE_INTRADAY_ZERO_VALUES = False
 
 # The default amount of data we pull for each user registered with this app
 FITAPP_DEFAULT_PERIOD = 'max'
+
+# The default fitbit scope, None defaults to all scopes, otherwise take
+# a list of scopes (eg. ["activity", "profile", "settings"])
+FITAPP_SCOPE = None
