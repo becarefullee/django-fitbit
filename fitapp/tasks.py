@@ -23,7 +23,7 @@ def subscribe(fitbit_user, subscriber_id):
     """ Subscribe to the user's fitbit data """
 
     fbusers = UserFitbit.objects.filter(fitbit_user=fitbit_user)
-    collection = utils.get_setting('FITAPP_COLLECTION')
+    collection = utils.get_setting('FITAPP_SUBSCRIPTION_COLLECTION')
     for fbuser in fbusers:
         fb = utils.create_fitbit(**fbuser.get_user_data())
         try:
