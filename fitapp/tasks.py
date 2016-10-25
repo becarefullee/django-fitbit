@@ -8,7 +8,7 @@ from dateutil import parser
 from django.core.cache import cache
 from django.utils.timezone import utc
 from django.db import transaction
-from fitbit.exceptions import HTTPBadRequest, HTTPTooManyRequests
+from fitbit.exceptions import HTTPBadRequest, HTTPTooManyRequests, HTTPUnauthorized
 
 from . import utils
 from .models import UserFitbit, TimeSeriesData, TimeSeriesDataType
@@ -39,11 +39,17 @@ def unsubscribe(*args, **kwargs):
     """ Unsubscribe from a user's fitbit data """
 
     fb = utils.create_fitbit(**kwargs)
+    collection = utils.get_setting('FITAPP_SUBSCRIPTION_COLLECTION')
     try:
-        for sub in fb.list_subscriptions()['apiSubscriptions']:
+        for sub in fb.list_subscriptions(collection=collection)['apiSubscriptions']:
             if sub['ownerId'] == kwargs['user_id']:
-                fb.subscription(sub['subscriptionId'], sub['subscriberId'],
-                                method="DELETE")
+                fb.subscription(sub['subscriptionId'].split('-')[0], sub['subscriberId'],
+                                collection=collection, method="DELETE")
+    except HTTPUnauthorized:
+        # user must have revoked access,exit()
+        # therefore they're already unsubscribed
+        logger.info("User must have already revoked the access")
+        return
     except:
         exc = sys.exc_info()[1]
         logger.exception("Error unsubscribing user: %s" % exc)
