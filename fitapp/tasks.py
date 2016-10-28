@@ -43,12 +43,15 @@ def unsubscribe(*args, **kwargs):
     try:
         for sub in fb.list_subscriptions(collection=collection)['apiSubscriptions']:
             if sub['ownerId'] == kwargs['user_id']:
+                # the subscription Id returned by the list subscriptions is
+                # "<fbuser.user.id>-<collection>" but here we just need to pass
+                # <fbuser.user.id> as we are also passing the collection along
                 fb.subscription(sub['subscriptionId'].split('-')[0], sub['subscriberId'],
                                 collection=collection, method="DELETE")
     except HTTPUnauthorized:
-        # user must have revoked access,exit()
+        # user must have revoked access
         # therefore they're already unsubscribed
-        logger.info("User must have already revoked the access")
+        logger.info("User (" + kwargs['user_id'] + ") must have already revoked the access")
         return
     except:
         exc = sys.exc_info()[1]
