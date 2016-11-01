@@ -235,7 +235,7 @@ def logout(request):
             except ImproperlyConfigured:
                 logger.exception("Error in view.logout: No FITAPP_SUBSCRIBER_ID configured.")
                 return redirect(reverse('fitbit-error'))
-            unsubscribe.apply_async(kwargs=fbuser.get_user_data(), countdown=5)
+            unsubscribe.apply_async(countdown=5, **fbuser.get_user_data())
         fbuser.delete()
     next_url = request.GET.get('next', None) or utils.get_setting(
         'FITAPP_LOGOUT_REDIRECT')
