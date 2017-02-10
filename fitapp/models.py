@@ -100,7 +100,7 @@ class TimeSeriesData(models.Model):
     user = models.ForeignKey(UserModel, help_text="The data's user")
     resource_type = models.ForeignKey(
         TimeSeriesDataType, help_text='The type of time series data')
-    date = models.DateField(help_text='The date the data was recorded')
+    date = models.DateTimeField(help_text='The date the data was recorded')
     value = models.CharField(
         null=True,
         default=None,

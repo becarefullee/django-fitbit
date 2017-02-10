@@ -65,6 +65,8 @@ def get_fitbit_data(fbuser, resource_type, base_date=None, period=None,
     data = fb.time_series(resource_path, user_id=fbuser.fitbit_user,
                           period=period, base_date=base_date,
                           end_date=end_date)
+    if return_all:
+        return data
     return data[resource_path.replace('/', '-')]
 
 

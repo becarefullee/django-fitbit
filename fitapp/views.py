@@ -133,7 +133,6 @@ def complete(request):
                          "with the same fitbit_user as %s." % (current_fbuser, user))
         return redirect(reverse('fitbit-error'))
 
-    user = request.user
     fbuser, _ = UserFitbit.objects.update_or_create(user=user, defaults={
         'fitbit_user': fitbit_user,
         'access_token': access_token,
