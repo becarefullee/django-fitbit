@@ -1,6 +1,7 @@
 from datetime import timedelta
 import logging
 import random
+import sys
 
 from celery import shared_task
 from celery.exceptions import Ignore, Reject
@@ -40,7 +41,7 @@ def unsubscribe(*args, **kwargs):
     collection = utils.get_setting('FITAPP_SUBSCRIPTION_COLLECTION')
     # Ignore updated token, it's not needed. The session gets the new token
     # automatically
-    fb = utils.create_fitbit(refresh_cb=lambda token: None, **kwargs)
+    fb = utils.create_fitbit(**kwargs)
     try:
         for sub in fb.list_subscriptions(collection=collection)['apiSubscriptions']:
             if sub['ownerId'] == kwargs['user_id']:

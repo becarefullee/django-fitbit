@@ -8,7 +8,12 @@ UserModel = getattr(settings, 'FITAPP_USER_MODEL', 'auth.User')
 
 @python_2_unicode_compatible
 class UserFitbit(models.Model):
-    """ A user's fitbit credentials, allowing API access """
+    """
+    A user's fitbit credentials, allowing API access
+
+    WARNING: Changes to the user field should be made manually to the
+    0001_initial migration
+    """
     user = models.OneToOneField(
         UserModel, help_text='The user')
     fitbit_user = models.CharField(
@@ -95,11 +100,14 @@ class TimeSeriesData(models.Model):
     https://dev.fitbit.com/docs/activity/#activity-time-series
     https://dev.fitbit.com/docs/sleep/#sleep-time-series
     https://dev.fitbit.com/docs/body/#body-time-series
+
+    WARNING: Changes to the user field should be made manually to the
+    0001_initial migration
     """
     user = models.ForeignKey(UserModel, help_text="The data's user")
     resource_type = models.ForeignKey(
         TimeSeriesDataType, help_text='The type of time series data')
-    date = models.DateField(help_text='The date the data was recorded')
+    date = models.DateTimeField(help_text='The date the data was recorded')
     value = models.CharField(
         null=True,
         default=None,
