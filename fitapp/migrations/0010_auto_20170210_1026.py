@@ -23,11 +23,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='timeseriesdata',
-            name='user',
-            field=models.ForeignKey(help_text="The data's user", to='fitapp.TestUserModel'),
-        ),
-        migrations.AlterField(
-            model_name='timeseriesdata',
             name='value',
             field=models.CharField(default=None, null=True, max_length=32, help_text='The value of the data. This is typically a number, though saved as a string here. The units can be inferred from the data type. For example, for step data the value might be "9783" (the units) would be "steps"'),
         ),
@@ -60,10 +55,5 @@ class Migration(migrations.Migration):
             model_name='userfitbit',
             name='refresh_token',
             field=models.TextField(help_text='The OAuth2 refresh token'),
-        ),
-        migrations.AlterField(
-            model_name='userfitbit',
-            name='user',
-            field=models.OneToOneField(to='fitapp.TestUserModel', help_text='The user'),
         ),
     ]
