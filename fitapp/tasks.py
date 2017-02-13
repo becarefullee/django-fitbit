@@ -214,6 +214,3 @@ def get_intraday_data(fitbit_user, cat, resource, date, tz_offset):
         exc = sys.exc_info()[1]
         logger.exception("Exception updating data for user %s: %s" % (fitbit_user, exc))
         raise Reject(exc, requeue=False)
-    except Exception as e:
-        logger.exception("Exception updating data: %s" % e)
-        raise Reject(e, requeue=False)
