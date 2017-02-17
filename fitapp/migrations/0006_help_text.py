@@ -14,11 +14,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterField(
             model_name='timeseriesdata',
-            name='date',
-            field=models.DateField(help_text=b'The date the data was recorded'),
-        ),
-        migrations.AlterField(
-            model_name='timeseriesdata',
             name='resource_type',
             field=models.ForeignKey(help_text=b'The type of time series data', to='fitapp.TimeSeriesDataType'),
         ),
