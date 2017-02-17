@@ -52,7 +52,7 @@ class Migration(migrations.Migration):
                 ('fitbit_user', models.CharField(unique=True, max_length=32)),
                 ('auth_token', models.TextField()),
                 ('auth_secret', models.TextField()),
-                ('user', models.OneToOneField(help_text=b'The user', to=UserModel)),
+                ('user', models.OneToOneField(help_text='The user', to=UserModel)),
             ],
             options={
             },
@@ -71,7 +71,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='timeseriesdata',
             name='user',
-            field=models.ForeignKey(to=UserModel, help_text=b"The data's user"),
+            field=models.ForeignKey(to=UserModel, help_text="The data's user"),
             preserve_default=True,
         ),
         migrations.AddField(
