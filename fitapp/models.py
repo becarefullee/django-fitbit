@@ -46,6 +46,7 @@ class UserFitbit(models.Model):
             'refresh_token': self.refresh_token,
             'expires_at': self.expires_at,
             'refresh_cb': self.refresh_cb,
+            'uuid': self.uuid,
         }
 
 

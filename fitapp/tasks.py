@@ -44,7 +44,7 @@ def unsubscribe(*args, **kwargs):
     fb = utils.create_fitbit(**kwargs)
     try:
         for sub in fb.list_subscriptions(collection=collection)['apiSubscriptions']:
-            if sub['ownerId'] == kwargs['user_id']:
+            if sub['ownerId'] == kwargs['uuid']:
                 # the subscription Id returned by the list subscriptions is
                 # "<fbuser.uuid>-<collection>" but here we just need to pass
                 # <fbuser.uuid> as we are also passing the collection along
