@@ -25,6 +25,7 @@ class UserFitbit(models.Model):
     refresh_token = models.TextField(help_text='The OAuth2 refresh token')
     expires_at = models.FloatField(
         help_text='The timestamp when the access token expires')
+    # This url-safe uuid is to allow non-conflicting subscription ids
     uuid = models.CharField(max_length=32,
                             default=urlsafe_b64encode(uuid.uuid4().bytes)[:22])
 
