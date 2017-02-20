@@ -1,3 +1,6 @@
+import uuid
+from base64 import urlsafe_b64encode
+
 from django.conf import settings
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
@@ -22,6 +25,8 @@ class UserFitbit(models.Model):
     refresh_token = models.TextField(help_text='The OAuth2 refresh token')
     expires_at = models.FloatField(
         help_text='The timestamp when the access token expires')
+    uuid = models.CharField(max_length=32,
+                            default=urlsafe_b64encode(uuid.uuid4().bytes)[:22])
 
     def __str__(self):
         return self.user.__str__()

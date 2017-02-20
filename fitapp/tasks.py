@@ -28,7 +28,7 @@ def subscribe(fitbit_user, subscriber_id):
     for fbuser in fbusers:
         fb = utils.create_fitbit(**fbuser.get_user_data())
         try:
-            fb.subscription(str(fbuser.user.id), str(subscriber_id), collection=collection)
+            fb.subscription(fbuser.uuid, str(subscriber_id), collection=collection)
         except Exception as e:
             logger.exception("Error subscribing user: %s" % e)
             raise Reject(e, requeue=False)
@@ -46,8 +46,8 @@ def unsubscribe(*args, **kwargs):
         for sub in fb.list_subscriptions(collection=collection)['apiSubscriptions']:
             if sub['ownerId'] == kwargs['user_id']:
                 # the subscription Id returned by the list subscriptions is
-                # "<fbuser.user.id>-<collection>" but here we just need to pass
-                # <fbuser.user.id> as we are also passing the collection along
+                # "<fbuser.uuid>-<collection>" but here we just need to pass
+                # <fbuser.uuid> as we are also passing the collection along
                 fb.subscription(sub['subscriptionId'].split('-')[0], sub['subscriberId'],
                                 collection=collection, method="DELETE")
     except HTTPUnauthorized:
