@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='userfitbit',
             name='uuid',
-            field=models.CharField(max_length=32, default=b'p4dhCGJ4S0uAciU0FSNMUg'),
+            field=models.CharField(default=None, max_length=32, null=True),
         ),
     ]

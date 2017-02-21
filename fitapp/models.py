@@ -26,8 +26,7 @@ class UserFitbit(models.Model):
     expires_at = models.FloatField(
         help_text='The timestamp when the access token expires')
     # This url-safe uuid is to allow non-conflicting subscription ids
-    uuid = models.CharField(max_length=32,
-                            default=urlsafe_b64encode(uuid.uuid4().bytes)[:22])
+    uuid = models.CharField(max_length=32, default=None, null=True)
 
     def __str__(self):
         return self.user.__str__()
@@ -48,6 +47,11 @@ class UserFitbit(models.Model):
             'refresh_cb': self.refresh_cb,
             'uuid': self.uuid,
         }
+
+    def save(self, *args, **kwargs):
+        if not self.uuid:
+            self.uuid = urlsafe_b64encode(uuid.uuid4().bytes)[:22]
+        return super(UserFitbit, self).save(*args, **kwargs)
 
 
 class TimeSeriesDataType(models.Model):

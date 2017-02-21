@@ -44,11 +44,12 @@ def unsubscribe(*args, **kwargs):
     fb = utils.create_fitbit(**kwargs)
     try:
         for sub in fb.list_subscriptions(collection=collection)['apiSubscriptions']:
-            if sub['ownerId'] == kwargs['uuid']:
+            if sub['ownerId'] == kwargs['user_id']:
                 # the subscription Id returned by the list subscriptions is
                 # "<fbuser.uuid>-<collection>" but here we just need to pass
                 # <fbuser.uuid> as we are also passing the collection along
-                fb.subscription(sub['subscriptionId'].split('-')[0], sub['subscriberId'],
+                # Note that hyphens might be included in the generated UUID
+                fb.subscription(sub['subscriptionId'].rsplit('-', 1)[0], sub['subscriberId'],
                                 collection=collection, method="DELETE")
     except HTTPUnauthorized:
         # user must have revoked access
