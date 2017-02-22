@@ -53,7 +53,7 @@ class Command(BaseCommand):
             print("New access token expires at: {}".format(
                 user_fitbit.expires_at))
         except InvalidGrantError:
-            print("ERROR: could not refresh access token.")
+            print("INVALID GRANT ERROR: could not refresh access token.")
             return
 
         print("\nDEVICES:")
