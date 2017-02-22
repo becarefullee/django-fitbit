@@ -31,8 +31,8 @@ class Command(BaseCommand):
         if not user_fitbits:
             print("No UserFitbit objects associated with the "
                   "given username: {}".format(username))
-
             return
+
         if user_fitbits.count() > 1:
             print("Multile UserFitbit objects found for "
                   "username: {}".format(username))
