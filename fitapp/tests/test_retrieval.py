@@ -143,7 +143,7 @@ class TestRetrievalTask(FitappTestBase):
 
     def _receive_fitbit_updates(self, status_code=204, file=False, extra_data=None):
         base_data = [{
-            'subscriptionId': self.fbuser.user.id,
+            'subscriptionId': self.fbuser.uuid,
             'ownerId': self.fbuser.fitbit_user,
             'collectionType': self.category,
             'date': self.date
@@ -238,7 +238,7 @@ class TestRetrievalTask(FitappTestBase):
         foods = TimeSeriesDataType.foods
         kwargs = {'date': parser.parse(self.date)}
         self._receive_fitbit_updates(file=True, extra_data={
-            'subscriptionId': self.fbuser.user.id,
+            'subscriptionId': self.fbuser.uuid,
             'ownerId': self.fbuser.fitbit_user,
             'collectionType': 'foods',
             'date': self.date
@@ -260,7 +260,7 @@ class TestRetrievalTask(FitappTestBase):
         foods = TimeSeriesDataType.foods
         kwargs = {'date': parser.parse(self.date)}
         self._receive_fitbit_updates(status_code=500, file=True, extra_data={
-            'subscriptionId': self.fbuser.user.id,
+            'subscriptionId': self.fbuser.uuid,
             'ownerId': self.fbuser.fitbit_user,
             'collectionType': 'foods',
             'date': self.date
