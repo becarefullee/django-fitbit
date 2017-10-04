@@ -28,7 +28,11 @@ def subscribe(fitbit_user, subscriber_id):
     for fbuser in fbusers:
         fb = utils.create_fitbit(**fbuser.get_user_data())
         try:
-            fb.subscription(fbuser.uuid, str(subscriber_id), collection=collection)
+            if isinstance(collection, str):
+                fb.subscription(fbuser.uuid, str(subscriber_id), collection=collection)
+            else:
+                for single_collection in collection:
+                    fb.subscription(fbuser.uuid, str(subscriber_id), collection=single_collection)
         except Exception as e:
             logger.exception("Error subscribing user: %s" % e)
             raise Reject(e, requeue=False)
