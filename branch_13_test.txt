@@ -1,0 +1,472 @@
+GLOB sdist-make: /home/madsilva/Devel/django-fitbit/setup.py
+py36-1.11.X create: /home/madsilva/Devel/django-fitbit/.tox/py36-1.11.X
+ERROR: InterpreterNotFound: python3.6
+py36-docs create: /home/madsilva/Devel/django-fitbit/.tox/py36-docs
+ERROR: InterpreterNotFound: python3.6
+pypy-1.11.X create: /home/madsilva/Devel/django-fitbit/.tox/pypy-1.11.X
+ERROR: InterpreterNotFound: pypy
+pypy-1.10.X create: /home/madsilva/Devel/django-fitbit/.tox/pypy-1.10.X
+ERROR: InterpreterNotFound: pypy
+pypy-1.9.X create: /home/madsilva/Devel/django-fitbit/.tox/pypy-1.9.X
+ERROR: InterpreterNotFound: pypy
+py27-1.11.X inst-nodeps: /home/madsilva/Devel/django-fitbit/.tox/dist/django-fitbit-0.3.0.zip
+py27-1.11.X installed: alabaster==0.7.10,amqp==2.2.2,Babel==2.5.1,billiard==3.5.0.3,celery==4.1.0,certifi==2017.7.27.1,chardet==3.0.4,coverage==4.4.1,Django==1.11.6,django-fitbit==0.3.0,docutils==0.14,fitbit==0.3.0,freezegun==0.3.9,funcsigs==1.0.2,idna==2.6,imagesize==0.7.1,Jinja2==2.9.6,kombu==4.1.0,MarkupSafe==1.0,mock==1.3.0,oauthlib==2.0.4,pbr==3.1.1,Pygments==2.2.0,python-dateutil==2.6.1,pytz==2017.2,requests==2.18.4,requests-mock==1.3.0,requests-oauthlib==0.8.0,simplejson==3.11.1,six==1.11.0,snowballstemmer==1.2.1,Sphinx==1.6.4,sphinxcontrib-websupport==1.0.1,typing==3.6.2,urllib3==1.22,vine==1.1.4
+py27-1.11.X runtests: PYTHONHASHSEED='392253794'
+py27-1.11.X runtests: commands[0] | /home/madsilva/Devel/django-fitbit/.tox/py27-1.11.X/bin/python run_tests.py
+.F..............................................................No handlers could be found for logger "fitapp.views"
+.............................E...FFF.
+======================================================================
+ERROR: test_get_token_expired (fitapp.tests.test_integration.TestLogoutView)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.11.X/local/lib/python2.7/site-packages/freezegun/api.py", line 495, in wrapper
+    result = func(*args, **kwargs)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.11.X/local/lib/python2.7/site-packages/mock/mock.py", line 1305, in patched
+    return func(*args, **keywargs)
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_integration.py", line 439, in test_get_token_expired
+    assert mock_requests[1].path == '/1/user/-/apisubscriptions.json'
+IndexError: list index out of range
+
+======================================================================
+FAIL: test_userfitbit (fitapp.tests.test_models.TestFitappModels)
+UserFitbit was already created in base, now test the properties
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_models.py", line 16, in test_userfitbit
+    'user_id': self.fbuser.fitbit_user
+AssertionError: {'user_id': 'egvWhCKgnyWMVekZEotIfPBng', 'refresh_token': 'pmEZecmeXOLdLJVvaYpLc [truncated]... != {'user_id': 'egvWhCKgnyWMVekZEotIfPBng', 'access_token': 'eqySHWrkXXKJOoHLefotkQ [truncated]...
+  {'access_token': 'eqySHWrkXXKJOoHLefotkQofv',
+   'expires_at': 1507577028.91645,
+   'refresh_cb': <bound method UserFitbit.refresh_cb of <UserFitbit: TestUserModel object>>,
+   'refresh_token': 'pmEZecmeXOLdLJVvaYpLcAjsn',
+-  'user_id': 'egvWhCKgnyWMVekZEotIfPBng',
+?                                        ^
+
++  'user_id': 'egvWhCKgnyWMVekZEotIfPBng'}
+?                                        ^
+
+-  'uuid': 'fYkS7WDIQEyucFSADxcXrg'}
+
+======================================================================
+FAIL: test_subscribe (fitapp.tests.test_integration.TestSubscription)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.11.X/local/lib/python2.7/site-packages/mock/mock.py", line 1305, in patched
+    return func(*args, **keywargs)
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_integration.py", line 477, in test_subscribe
+    collection=None)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.11.X/local/lib/python2.7/site-packages/mock/mock.py", line 947, in assert_called_once_with
+    raise AssertionError(msg)
+AssertionError: Expected 'subscription' to be called once. Called 0 times.
+
+======================================================================
+FAIL: test_subscribe_error (fitapp.tests.test_integration.TestSubscription)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.11.X/local/lib/python2.7/site-packages/mock/mock.py", line 1305, in patched
+    return func(*args, **keywargs)
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_integration.py", line 485, in test_subscribe_error
+    collection=None)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.11.X/local/lib/python2.7/site-packages/mock/mock.py", line 947, in assert_called_once_with
+    raise AssertionError(msg)
+AssertionError: Expected 'subscription' to be called once. Called 0 times.
+
+======================================================================
+FAIL: test_unsubscribe (fitapp.tests.test_integration.TestSubscription)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.11.X/local/lib/python2.7/site-packages/mock/mock.py", line 1305, in patched
+    return func(*args, **keywargs)
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_integration.py", line 501, in test_unsubscribe
+    list_subscriptions.assert_called_once_with()
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.11.X/local/lib/python2.7/site-packages/mock/mock.py", line 948, in assert_called_once_with
+    return self.assert_called_with(*args, **kwargs)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.11.X/local/lib/python2.7/site-packages/mock/mock.py", line 937, in assert_called_with
+    six.raise_from(AssertionError(_error_message(cause)), cause)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.11.X/local/lib/python2.7/site-packages/six.py", line 737, in raise_from
+    raise value
+AssertionError: Expected call: list_subscriptions()
+Actual call: list_subscriptions(collection=None)
+
+----------------------------------------------------------------------
+Ran 101 tests in 21.220s
+
+FAILED (failures=4, errors=1)
+Creating test database for alias 'default'...
+System check identified no issues (0 silenced).
+Destroying test database for alias 'default'...
+ERROR: InvocationError: '/home/madsilva/Devel/django-fitbit/.tox/py27-1.11.X/bin/python run_tests.py'
+py27-1.10.X inst-nodeps: /home/madsilva/Devel/django-fitbit/.tox/dist/django-fitbit-0.3.0.zip
+py27-1.10.X installed: alabaster==0.7.10,amqp==2.2.2,Babel==2.5.1,billiard==3.5.0.3,celery==4.1.0,certifi==2017.7.27.1,chardet==3.0.4,coverage==4.4.1,Django==1.10.8,django-fitbit==0.3.0,docutils==0.14,fitbit==0.3.0,freezegun==0.3.9,funcsigs==1.0.2,idna==2.6,imagesize==0.7.1,Jinja2==2.9.6,kombu==4.1.0,MarkupSafe==1.0,mock==1.3.0,oauthlib==2.0.4,pbr==3.1.1,Pygments==2.2.0,python-dateutil==2.6.1,pytz==2017.2,requests==2.18.4,requests-mock==1.3.0,requests-oauthlib==0.8.0,simplejson==3.11.1,six==1.11.0,snowballstemmer==1.2.1,Sphinx==1.6.4,sphinxcontrib-websupport==1.0.1,typing==3.6.2,urllib3==1.22,vine==1.1.4
+py27-1.10.X runtests: PYTHONHASHSEED='392253794'
+py27-1.10.X runtests: commands[0] | /home/madsilva/Devel/django-fitbit/.tox/py27-1.10.X/bin/python run_tests.py
+.F..............................................................No handlers could be found for logger "fitapp.views"
+.............................E...FFF.
+======================================================================
+ERROR: test_get_token_expired (fitapp.tests.test_integration.TestLogoutView)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.10.X/local/lib/python2.7/site-packages/freezegun/api.py", line 495, in wrapper
+    result = func(*args, **kwargs)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.10.X/local/lib/python2.7/site-packages/mock/mock.py", line 1305, in patched
+    return func(*args, **keywargs)
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_integration.py", line 439, in test_get_token_expired
+    assert mock_requests[1].path == '/1/user/-/apisubscriptions.json'
+IndexError: list index out of range
+
+======================================================================
+FAIL: test_userfitbit (fitapp.tests.test_models.TestFitappModels)
+UserFitbit was already created in base, now test the properties
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_models.py", line 16, in test_userfitbit
+    'user_id': self.fbuser.fitbit_user
+AssertionError: {'user_id': 'uMsvYBusmrjEIgcTWNRuOECwf', 'refresh_token': 'kawBnVruABecTDPTeVflI [truncated]... != {'user_id': 'uMsvYBusmrjEIgcTWNRuOECwf', 'access_token': 'egdAsOVCjfYbvhksLMzswO [truncated]...
+  {'access_token': 'egdAsOVCjfYbvhksLMzswObmI',
+   'expires_at': 1507577053.590705,
+   'refresh_cb': <bound method UserFitbit.refresh_cb of <UserFitbit: TestUserModel object>>,
+   'refresh_token': 'kawBnVruABecTDPTeVflIACqC',
+-  'user_id': 'uMsvYBusmrjEIgcTWNRuOECwf',
+?                                        ^
+
++  'user_id': 'uMsvYBusmrjEIgcTWNRuOECwf'}
+?                                        ^
+
+-  'uuid': 'nqQ7FVV6R2aPVJq3uBdaqA'}
+
+======================================================================
+FAIL: test_subscribe (fitapp.tests.test_integration.TestSubscription)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.10.X/local/lib/python2.7/site-packages/mock/mock.py", line 1305, in patched
+    return func(*args, **keywargs)
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_integration.py", line 477, in test_subscribe
+    collection=None)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.10.X/local/lib/python2.7/site-packages/mock/mock.py", line 947, in assert_called_once_with
+    raise AssertionError(msg)
+AssertionError: Expected 'subscription' to be called once. Called 0 times.
+
+======================================================================
+FAIL: test_subscribe_error (fitapp.tests.test_integration.TestSubscription)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.10.X/local/lib/python2.7/site-packages/mock/mock.py", line 1305, in patched
+    return func(*args, **keywargs)
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_integration.py", line 485, in test_subscribe_error
+    collection=None)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.10.X/local/lib/python2.7/site-packages/mock/mock.py", line 947, in assert_called_once_with
+    raise AssertionError(msg)
+AssertionError: Expected 'subscription' to be called once. Called 0 times.
+
+======================================================================
+FAIL: test_unsubscribe (fitapp.tests.test_integration.TestSubscription)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.10.X/local/lib/python2.7/site-packages/mock/mock.py", line 1305, in patched
+    return func(*args, **keywargs)
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_integration.py", line 501, in test_unsubscribe
+    list_subscriptions.assert_called_once_with()
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.10.X/local/lib/python2.7/site-packages/mock/mock.py", line 948, in assert_called_once_with
+    return self.assert_called_with(*args, **kwargs)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.10.X/local/lib/python2.7/site-packages/mock/mock.py", line 937, in assert_called_with
+    six.raise_from(AssertionError(_error_message(cause)), cause)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.10.X/local/lib/python2.7/site-packages/six.py", line 737, in raise_from
+    raise value
+AssertionError: Expected call: list_subscriptions()
+Actual call: list_subscriptions(collection=None)
+
+----------------------------------------------------------------------
+Ran 101 tests in 21.782s
+
+FAILED (failures=4, errors=1)
+Creating test database for alias 'default'...
+Destroying test database for alias 'default'...
+ERROR: InvocationError: '/home/madsilva/Devel/django-fitbit/.tox/py27-1.10.X/bin/python run_tests.py'
+py27-1.9.X inst-nodeps: /home/madsilva/Devel/django-fitbit/.tox/dist/django-fitbit-0.3.0.zip
+py27-1.9.X installed: alabaster==0.7.10,amqp==2.2.2,Babel==2.5.1,billiard==3.5.0.3,celery==4.1.0,certifi==2017.7.27.1,chardet==3.0.4,coverage==4.4.1,Django==1.9.13,django-fitbit==0.3.0,docutils==0.14,fitbit==0.3.0,freezegun==0.3.9,funcsigs==1.0.2,idna==2.6,imagesize==0.7.1,Jinja2==2.9.6,kombu==4.1.0,MarkupSafe==1.0,mock==1.3.0,oauthlib==2.0.4,pbr==3.1.1,Pygments==2.2.0,python-dateutil==2.6.1,pytz==2017.2,requests==2.18.4,requests-mock==1.3.0,requests-oauthlib==0.8.0,simplejson==3.11.1,six==1.11.0,snowballstemmer==1.2.1,Sphinx==1.6.4,sphinxcontrib-websupport==1.0.1,typing==3.6.2,urllib3==1.22,vine==1.1.4
+py27-1.9.X runtests: PYTHONHASHSEED='392253794'
+py27-1.9.X runtests: commands[0] | /home/madsilva/Devel/django-fitbit/.tox/py27-1.9.X/bin/python run_tests.py
+.F..............................................................No handlers could be found for logger "fitapp.views"
+.............................E...FFF.
+======================================================================
+ERROR: test_get_token_expired (fitapp.tests.test_integration.TestLogoutView)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.9.X/local/lib/python2.7/site-packages/freezegun/api.py", line 495, in wrapper
+    result = func(*args, **kwargs)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.9.X/local/lib/python2.7/site-packages/mock/mock.py", line 1305, in patched
+    return func(*args, **keywargs)
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_integration.py", line 439, in test_get_token_expired
+    assert mock_requests[1].path == '/1/user/-/apisubscriptions.json'
+IndexError: list index out of range
+
+======================================================================
+FAIL: test_userfitbit (fitapp.tests.test_models.TestFitappModels)
+UserFitbit was already created in base, now test the properties
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_models.py", line 16, in test_userfitbit
+    'user_id': self.fbuser.fitbit_user
+AssertionError: {'user_id': 'UDWjKufMSCvNTukGWmVHzcVdc', 'refresh_token': 'KamPDknFNQpRmpuWUagKh [truncated]... != {'user_id': 'UDWjKufMSCvNTukGWmVHzcVdc', 'access_token': 'nqzYcYrpStQEbvmSVTTMTy [truncated]...
+  {'access_token': 'nqzYcYrpStQEbvmSVTTMTyXOC',
+   'expires_at': 1507577079.258666,
+   'refresh_cb': <bound method UserFitbit.refresh_cb of <UserFitbit: TestUserModel object>>,
+   'refresh_token': 'KamPDknFNQpRmpuWUagKhYwMV',
+-  'user_id': 'UDWjKufMSCvNTukGWmVHzcVdc',
+?                                        ^
+
++  'user_id': 'UDWjKufMSCvNTukGWmVHzcVdc'}
+?                                        ^
+
+-  'uuid': '0biNXwbzSwWwpnts3Z8Wjg'}
+
+======================================================================
+FAIL: test_subscribe (fitapp.tests.test_integration.TestSubscription)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.9.X/local/lib/python2.7/site-packages/mock/mock.py", line 1305, in patched
+    return func(*args, **keywargs)
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_integration.py", line 477, in test_subscribe
+    collection=None)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.9.X/local/lib/python2.7/site-packages/mock/mock.py", line 947, in assert_called_once_with
+    raise AssertionError(msg)
+AssertionError: Expected 'subscription' to be called once. Called 0 times.
+
+======================================================================
+FAIL: test_subscribe_error (fitapp.tests.test_integration.TestSubscription)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.9.X/local/lib/python2.7/site-packages/mock/mock.py", line 1305, in patched
+    return func(*args, **keywargs)
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_integration.py", line 485, in test_subscribe_error
+    collection=None)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.9.X/local/lib/python2.7/site-packages/mock/mock.py", line 947, in assert_called_once_with
+    raise AssertionError(msg)
+AssertionError: Expected 'subscription' to be called once. Called 0 times.
+
+======================================================================
+FAIL: test_unsubscribe (fitapp.tests.test_integration.TestSubscription)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.9.X/local/lib/python2.7/site-packages/mock/mock.py", line 1305, in patched
+    return func(*args, **keywargs)
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_integration.py", line 501, in test_unsubscribe
+    list_subscriptions.assert_called_once_with()
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.9.X/local/lib/python2.7/site-packages/mock/mock.py", line 948, in assert_called_once_with
+    return self.assert_called_with(*args, **kwargs)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.9.X/local/lib/python2.7/site-packages/mock/mock.py", line 937, in assert_called_with
+    six.raise_from(AssertionError(_error_message(cause)), cause)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.9.X/local/lib/python2.7/site-packages/six.py", line 737, in raise_from
+    raise value
+AssertionError: Expected call: list_subscriptions()
+Actual call: list_subscriptions(collection=None)
+
+----------------------------------------------------------------------
+Ran 101 tests in 20.107s
+
+FAILED (failures=4, errors=1)
+Creating test database for alias 'default'...
+Destroying test database for alias 'default'...
+ERROR: InvocationError: '/home/madsilva/Devel/django-fitbit/.tox/py27-1.9.X/bin/python run_tests.py'
+py34-1.11.X create: /home/madsilva/Devel/django-fitbit/.tox/py34-1.11.X
+ERROR: InterpreterNotFound: python3.4
+py34-1.10.X create: /home/madsilva/Devel/django-fitbit/.tox/py34-1.10.X
+ERROR: InterpreterNotFound: python3.4
+py34-1.9.X create: /home/madsilva/Devel/django-fitbit/.tox/py34-1.9.X
+ERROR: InterpreterNotFound: python3.4
+py35-1.11.X inst-nodeps: /home/madsilva/Devel/django-fitbit/.tox/dist/django-fitbit-0.3.0.zip
+py35-1.11.X installed: alabaster==0.7.10,amqp==2.2.2,Babel==2.5.1,billiard==3.5.0.3,celery==4.1.0,certifi==2017.7.27.1,chardet==3.0.4,coverage==4.4.1,Django==1.11.6,django-fitbit==0.3.0,docutils==0.14,fitbit==0.3.0,freezegun==0.3.9,idna==2.6,imagesize==0.7.1,Jinja2==2.9.6,kombu==4.1.0,MarkupSafe==1.0,mock==1.3.0,oauthlib==2.0.4,pbr==3.1.1,Pygments==2.2.0,python-dateutil==2.6.1,pytz==2017.2,requests==2.18.4,requests-mock==1.3.0,requests-oauthlib==0.8.0,simplejson==3.11.1,six==1.11.0,snowballstemmer==1.2.1,Sphinx==1.6.4,sphinxcontrib-websupport==1.0.1,urllib3==1.22,vine==1.1.4
+py35-1.11.X runtests: PYTHONHASHSEED='392253794'
+py35-1.11.X runtests: commands[0] | /home/madsilva/Devel/django-fitbit/.tox/py35-1.11.X/bin/python run_tests.py
+E
+======================================================================
+ERROR: fitapp.tests (unittest.loader._FailedTest)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: fitapp.tests
+Traceback (most recent call last):
+  File "/usr/lib/python3.5/unittest/loader.py", line 462, in _find_test_path
+    package = self._get_module_from_name(name)
+  File "/usr/lib/python3.5/unittest/loader.py", line 369, in _get_module_from_name
+    __import__(name)
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/__init__.py", line 4, in <module>
+    from fitapp.tests.test_integration import *
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_integration.py", line 19, in <module>
+    from test_models import TestUserModel
+ImportError: No module named 'test_models'
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)
+Creating test database for alias 'default'...
+System check identified no issues (0 silenced).
+Destroying test database for alias 'default'...
+ERROR: InvocationError: '/home/madsilva/Devel/django-fitbit/.tox/py35-1.11.X/bin/python run_tests.py'
+py35-1.10.X inst-nodeps: /home/madsilva/Devel/django-fitbit/.tox/dist/django-fitbit-0.3.0.zip
+py35-1.10.X installed: alabaster==0.7.10,amqp==2.2.2,Babel==2.5.1,billiard==3.5.0.3,celery==4.1.0,certifi==2017.7.27.1,chardet==3.0.4,coverage==4.4.1,Django==1.10.8,django-fitbit==0.3.0,docutils==0.14,fitbit==0.3.0,freezegun==0.3.9,idna==2.6,imagesize==0.7.1,Jinja2==2.9.6,kombu==4.1.0,MarkupSafe==1.0,mock==1.3.0,oauthlib==2.0.4,pbr==3.1.1,Pygments==2.2.0,python-dateutil==2.6.1,pytz==2017.2,requests==2.18.4,requests-mock==1.3.0,requests-oauthlib==0.8.0,simplejson==3.11.1,six==1.11.0,snowballstemmer==1.2.1,Sphinx==1.6.4,sphinxcontrib-websupport==1.0.1,urllib3==1.22,vine==1.1.4
+py35-1.10.X runtests: PYTHONHASHSEED='392253794'
+py35-1.10.X runtests: commands[0] | /home/madsilva/Devel/django-fitbit/.tox/py35-1.10.X/bin/python run_tests.py
+E
+======================================================================
+ERROR: fitapp.tests (unittest.loader._FailedTest)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: fitapp.tests
+Traceback (most recent call last):
+  File "/usr/lib/python3.5/unittest/loader.py", line 462, in _find_test_path
+    package = self._get_module_from_name(name)
+  File "/usr/lib/python3.5/unittest/loader.py", line 369, in _get_module_from_name
+    __import__(name)
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/__init__.py", line 4, in <module>
+    from fitapp.tests.test_integration import *
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_integration.py", line 19, in <module>
+    from test_models import TestUserModel
+ImportError: No module named 'test_models'
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)
+Creating test database for alias 'default'...
+Destroying test database for alias 'default'...
+ERROR: InvocationError: '/home/madsilva/Devel/django-fitbit/.tox/py35-1.10.X/bin/python run_tests.py'
+py35-1.9.X inst-nodeps: /home/madsilva/Devel/django-fitbit/.tox/dist/django-fitbit-0.3.0.zip
+py35-1.9.X installed: alabaster==0.7.10,amqp==2.2.2,Babel==2.5.1,billiard==3.5.0.3,celery==4.1.0,certifi==2017.7.27.1,chardet==3.0.4,coverage==4.4.1,Django==1.9.13,django-fitbit==0.3.0,docutils==0.14,fitbit==0.3.0,freezegun==0.3.9,idna==2.6,imagesize==0.7.1,Jinja2==2.9.6,kombu==4.1.0,MarkupSafe==1.0,mock==1.3.0,oauthlib==2.0.4,pbr==3.1.1,Pygments==2.2.0,python-dateutil==2.6.1,pytz==2017.2,requests==2.18.4,requests-mock==1.3.0,requests-oauthlib==0.8.0,simplejson==3.11.1,six==1.11.0,snowballstemmer==1.2.1,Sphinx==1.6.4,sphinxcontrib-websupport==1.0.1,urllib3==1.22,vine==1.1.4
+py35-1.9.X runtests: PYTHONHASHSEED='392253794'
+py35-1.9.X runtests: commands[0] | /home/madsilva/Devel/django-fitbit/.tox/py35-1.9.X/bin/python run_tests.py
+E
+======================================================================
+ERROR: fitapp.tests (unittest.loader._FailedTest)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: fitapp.tests
+Traceback (most recent call last):
+  File "/usr/lib/python3.5/unittest/loader.py", line 462, in _find_test_path
+    package = self._get_module_from_name(name)
+  File "/usr/lib/python3.5/unittest/loader.py", line 369, in _get_module_from_name
+    __import__(name)
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/__init__.py", line 4, in <module>
+    from fitapp.tests.test_integration import *
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_integration.py", line 19, in <module>
+    from test_models import TestUserModel
+ImportError: No module named 'test_models'
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.002s
+
+FAILED (errors=1)
+Creating test database for alias 'default'...
+Destroying test database for alias 'default'...
+ERROR: InvocationError: '/home/madsilva/Devel/django-fitbit/.tox/py35-1.9.X/bin/python run_tests.py'
+pypy-1.8.X create: /home/madsilva/Devel/django-fitbit/.tox/pypy-1.8.X
+ERROR: InterpreterNotFound: pypy
+py27-1.8.X inst-nodeps: /home/madsilva/Devel/django-fitbit/.tox/dist/django-fitbit-0.3.0.zip
+py27-1.8.X installed: alabaster==0.7.10,amqp==2.2.2,Babel==2.5.1,billiard==3.5.0.3,celery==4.1.0,certifi==2017.7.27.1,chardet==3.0.4,coverage==4.4.1,Django==1.8.18,django-fitbit==0.3.0,docutils==0.14,fitbit==0.3.0,freezegun==0.3.9,funcsigs==1.0.2,idna==2.6,imagesize==0.7.1,Jinja2==2.9.6,kombu==4.1.0,MarkupSafe==1.0,mock==1.3.0,oauthlib==2.0.4,pbr==3.1.1,Pygments==2.2.0,python-dateutil==2.6.1,pytz==2017.2,requests==2.18.4,requests-mock==1.3.0,requests-oauthlib==0.8.0,simplejson==3.11.1,six==1.11.0,snowballstemmer==1.2.1,Sphinx==1.6.4,sphinxcontrib-websupport==1.0.1,typing==3.6.2,urllib3==1.22,vine==1.1.4
+py27-1.8.X runtests: PYTHONHASHSEED='392253794'
+py27-1.8.X runtests: commands[0] | /home/madsilva/Devel/django-fitbit/.tox/py27-1.8.X/bin/python run_tests.py
+.F..............................................................No handlers could be found for logger "fitapp.views"
+.............................E...FFF.
+======================================================================
+ERROR: test_get_token_expired (fitapp.tests.test_integration.TestLogoutView)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.8.X/local/lib/python2.7/site-packages/freezegun/api.py", line 495, in wrapper
+    result = func(*args, **kwargs)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.8.X/local/lib/python2.7/site-packages/mock/mock.py", line 1305, in patched
+    return func(*args, **keywargs)
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_integration.py", line 439, in test_get_token_expired
+    assert mock_requests[1].path == '/1/user/-/apisubscriptions.json'
+IndexError: list index out of range
+
+======================================================================
+FAIL: test_userfitbit (fitapp.tests.test_models.TestFitappModels)
+UserFitbit was already created in base, now test the properties
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_models.py", line 16, in test_userfitbit
+    'user_id': self.fbuser.fitbit_user
+AssertionError: {'user_id': 'bJRKqIBgQUMMPlPoEkXSlfZLz', 'refresh_token': 'rAISRMmNiowTkyYCiulOa [truncated]... != {'user_id': 'bJRKqIBgQUMMPlPoEkXSlfZLz', 'access_token': 'OdeigOHfCkzoauuebQmoyl [truncated]...
+  {'access_token': 'OdeigOHfCkzoauuebQmoyluPv',
+   'expires_at': 1507577114.557498,
+   'refresh_cb': <bound method UserFitbit.refresh_cb of <UserFitbit: TestUserModel object>>,
+   'refresh_token': 'rAISRMmNiowTkyYCiulOaPTFp',
+-  'user_id': 'bJRKqIBgQUMMPlPoEkXSlfZLz',
+?                                        ^
+
++  'user_id': 'bJRKqIBgQUMMPlPoEkXSlfZLz'}
+?                                        ^
+
+-  'uuid': 'VFPdq3T5TMWpcRaKCMfATA'}
+
+======================================================================
+FAIL: test_subscribe (fitapp.tests.test_integration.TestSubscription)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.8.X/local/lib/python2.7/site-packages/mock/mock.py", line 1305, in patched
+    return func(*args, **keywargs)
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_integration.py", line 477, in test_subscribe
+    collection=None)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.8.X/local/lib/python2.7/site-packages/mock/mock.py", line 947, in assert_called_once_with
+    raise AssertionError(msg)
+AssertionError: Expected 'subscription' to be called once. Called 0 times.
+
+======================================================================
+FAIL: test_subscribe_error (fitapp.tests.test_integration.TestSubscription)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.8.X/local/lib/python2.7/site-packages/mock/mock.py", line 1305, in patched
+    return func(*args, **keywargs)
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_integration.py", line 485, in test_subscribe_error
+    collection=None)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.8.X/local/lib/python2.7/site-packages/mock/mock.py", line 947, in assert_called_once_with
+    raise AssertionError(msg)
+AssertionError: Expected 'subscription' to be called once. Called 0 times.
+
+======================================================================
+FAIL: test_unsubscribe (fitapp.tests.test_integration.TestSubscription)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.8.X/local/lib/python2.7/site-packages/mock/mock.py", line 1305, in patched
+    return func(*args, **keywargs)
+  File "/home/madsilva/Devel/django-fitbit/fitapp/tests/test_integration.py", line 501, in test_unsubscribe
+    list_subscriptions.assert_called_once_with()
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.8.X/local/lib/python2.7/site-packages/mock/mock.py", line 948, in assert_called_once_with
+    return self.assert_called_with(*args, **kwargs)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.8.X/local/lib/python2.7/site-packages/mock/mock.py", line 937, in assert_called_with
+    six.raise_from(AssertionError(_error_message(cause)), cause)
+  File "/home/madsilva/Devel/django-fitbit/.tox/py27-1.8.X/local/lib/python2.7/site-packages/six.py", line 737, in raise_from
+    raise value
+AssertionError: Expected call: list_subscriptions()
+Actual call: list_subscriptions(collection=None)
+
+----------------------------------------------------------------------
+Ran 101 tests in 20.940s
+
+FAILED (failures=4, errors=1)
+Creating test database for alias 'default'...
+Destroying test database for alias 'default'...
+ERROR: InvocationError: '/home/madsilva/Devel/django-fitbit/.tox/py27-1.8.X/bin/python run_tests.py'
+py33-1.8.X create: /home/madsilva/Devel/django-fitbit/.tox/py33-1.8.X
+ERROR: InterpreterNotFound: python3.3
+py34-1.8.X create: /home/madsilva/Devel/django-fitbit/.tox/py34-1.8.X
+ERROR: InterpreterNotFound: python3.4
+___________________________________ summary ____________________________________
+ERROR:   py36-1.11.X: InterpreterNotFound: python3.6
+ERROR:   py36-docs: InterpreterNotFound: python3.6
+ERROR:   pypy-1.11.X: InterpreterNotFound: pypy
+ERROR:   pypy-1.10.X: InterpreterNotFound: pypy
+ERROR:   pypy-1.9.X: InterpreterNotFound: pypy
+ERROR:   py27-1.11.X: commands failed
+ERROR:   py27-1.10.X: commands failed
+ERROR:   py27-1.9.X: commands failed
+ERROR:   py34-1.11.X: InterpreterNotFound: python3.4
+ERROR:   py34-1.10.X: InterpreterNotFound: python3.4
+ERROR:   py34-1.9.X: InterpreterNotFound: python3.4
+ERROR:   py35-1.11.X: commands failed
+ERROR:   py35-1.10.X: commands failed
+ERROR:   py35-1.9.X: commands failed
+ERROR:   pypy-1.8.X: InterpreterNotFound: pypy
+ERROR:   py27-1.8.X: commands failed
+ERROR:   py33-1.8.X: InterpreterNotFound: python3.3
+ERROR:   py34-1.8.X: InterpreterNotFound: python3.4

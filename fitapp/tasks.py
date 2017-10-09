@@ -27,15 +27,20 @@ def subscribe(fitbit_user, subscriber_id):
     collection = utils.get_setting('FITAPP_SUBSCRIPTION_COLLECTION')
     for fbuser in fbusers:
         fb = utils.create_fitbit(**fbuser.get_user_data())
-        try:
-            if isinstance(collection, str):
+        if isinstance(collection, str):
+            try:
                 fb.subscription(fbuser.uuid, str(subscriber_id), collection=collection)
-            else:
-                for single_collection in collection:
+            except Exception as e:
+                logger.exception("Error subscribing user: %s" % e)
+                raise Reject(e, requeue=False)
+        else:
+            for single_collection in collection:
+                try:
                     fb.subscription(fbuser.uuid, str(subscriber_id), collection=single_collection)
-        except Exception as e:
-            logger.exception("Error subscribing user: %s" % e)
-            raise Reject(e, requeue=False)
+                except Exception as e:
+                    logger.exception("Error subscribing user: %s" % e)
+                    raise Reject(e, requeue=False)
+
 
 
 @shared_task
