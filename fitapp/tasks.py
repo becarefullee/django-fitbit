@@ -29,22 +29,9 @@ def subscribe(fitbit_user, subscriber_id):
 
     for fbuser in fbusers:
         fb = utils.create_fitbit(**fbuser.get_user_data())
-
         for collection in collections:
-            unique_id = fbuser.uuid
-            # should probably put this in a utility function
-            if collection == 'foods':
-                unique_id += str(TimeSeriesDataType.foods)
-            elif collection == 'activities':
-                unique_id += str(TimeSeriesDataType.activities)
-            elif collection == 'sleep':
-                unique_id += str(TimeSeriesDataType.sleep)
-            elif collection == 'body':
-                unique_id += str(TimeSeriesDataType.body)
-
+            unique_id = fbuser.uuid + utils.get_collection_category_number(collection)
             try:
-                print('attempting to create subscription to {} for user {}'.format(
-                        collection, fbuser))
                 fb.subscription(unique_id, str(subscriber_id), collection=collection)
             except Exception as e:
                 logger.exception("Error subscribing user: %s" % e)
@@ -67,7 +54,6 @@ def unsubscribe(*args, **kwargs):
                     # "<fbuser.uuid>-<collection>" but here we just need to pass
                     # <fbuser.uuid> as we are also passing the collection along
                     # Note that hyphens might be included in the generated UUID
-                    print('Attempting to unsubscribe from {}'.format(collection))
                     fb.subscription(sub['subscriptionId'].rsplit('-', 1)[0], sub['subscriberId'],
                                     collection=collection, method="DELETE")
     except HTTPUnauthorized:
@@ -84,7 +70,6 @@ def unsubscribe(*args, **kwargs):
 @shared_task(bind=True)
 def get_time_series_data(self, fitbit_user, cat, resource, date=None):
     """ Get the user's time series data """
-    print('attempting to get time series data', fitbit_user, cat, resource, date)
     try:
         _type = TimeSeriesDataType.objects.get(category=cat, resource=resource)
     except TimeSeriesDataType.DoesNotExist as e:
