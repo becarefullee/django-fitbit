@@ -121,15 +121,3 @@ def _verified_setting(name):
                     list(set(res) - (set(res) & all_cat_res)), cat)
                 raise ImproperlyConfigured(msg)
     return result
-
-
-def get_collection_category_number(collection):
-    """Return the category number value from TimeSeriesDataType for the given collection name."""
-    if collection == 'foods':
-        return str(TimeSeriesDataType.foods)
-    elif collection == 'activities':
-        return str(TimeSeriesDataType.activities)
-    elif collection == 'sleep':
-        return str(TimeSeriesDataType.sleep)
-    elif collection == 'body':
-        return str(TimeSeriesDataType.body)

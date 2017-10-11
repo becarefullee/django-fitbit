@@ -30,7 +30,7 @@ def subscribe(fitbit_user, subscriber_id):
     for fbuser in fbusers:
         fb = utils.create_fitbit(**fbuser.get_user_data())
         for collection in collections:
-            unique_id = fbuser.uuid + utils.get_collection_category_number(collection)
+            unique_id = fbuser.uuid + getattr(TimeSeriesDataType, collection)
             try:
                 fb.subscription(unique_id, str(subscriber_id), collection=collection)
             except Exception as e:
