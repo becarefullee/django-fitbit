@@ -58,6 +58,7 @@ def unsubscribe(*args, **kwargs):
     # Ignore updated token, it's not needed. The session gets the new token
     # automatically
     fb = utils.create_fitbit(**kwargs)
+
     try:
         for collection in collections:
             for sub in fb.list_subscriptions(collection=collection)['apiSubscriptions']:

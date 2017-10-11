@@ -472,8 +472,6 @@ class TestLogoutView(FitappTestBase):
 class TestSubscription(FitappTestBase):
     @patch('fitbit.Fitbit.subscription')
     def test_subscribe(self, subscription):
-        print('testing')
-        raise Exception('test')
         subscribe.apply_async((self.fbuser.fitbit_user, 1,))
         subscription.assert_called_once_with(str(self.user.id), '1',
                                              collection=None)
