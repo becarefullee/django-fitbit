@@ -35,7 +35,7 @@ def subscribe(fitbit_user, subscriber_id):
             # should probably put this in a utility function
             if collection == 'foods':
                 unique_id += str(TimeSeriesDataType.foods)
-            elif collection == 'activites':
+            elif collection == 'activities':
                 unique_id += str(TimeSeriesDataType.activities)
             elif collection == 'sleep':
                 unique_id += str(TimeSeriesDataType.sleep)
@@ -66,6 +66,7 @@ def unsubscribe(*args, **kwargs):
                     # "<fbuser.uuid>-<collection>" but here we just need to pass
                     # <fbuser.uuid> as we are also passing the collection along
                     # Note that hyphens might be included in the generated UUID
+                    print('Attempting to unsubscribe from {}'.format(collection))
                     fb.subscription(sub['subscriptionId'].rsplit('-', 1)[0], sub['subscriberId'],
                                     collection=collection, method="DELETE")
     except HTTPUnauthorized:
@@ -82,7 +83,7 @@ def unsubscribe(*args, **kwargs):
 @shared_task(bind=True)
 def get_time_series_data(self, fitbit_user, cat, resource, date=None):
     """ Get the user's time series data """
-
+    print('attempting to get time series data', fitbit_user, cat, resource, date)
     try:
         _type = TimeSeriesDataType.objects.get(category=cat, resource=resource)
     except TimeSeriesDataType.DoesNotExist as e:

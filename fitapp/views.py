@@ -298,6 +298,7 @@ def update(request):
         `fitbit-update`
     """
     if request.method == 'POST':
+        print('running update view')
         try:
             body = request.body
             if request.FILES and 'updates' in request.FILES:
@@ -311,6 +312,7 @@ def update(request):
             subs = utils.get_setting('FITAPP_SUBSCRIPTIONS')
             btw_delay = utils.get_setting('FITAPP_BETWEEN_DELAY')
             all_tsdts = list(TimeSeriesDataType.objects.all())
+            print('updates:', updates)
             for update in updates:
                 c_type = update['collectionType']
                 if subs is not None and c_type not in subs:
@@ -326,6 +328,7 @@ def update(request):
                 for i, _type in enumerate(tsdts):
                     # Offset each call by a few seconds so they don't bog down
                     # the server
+                    print('attempting to run get_time_series_data')
                     get_time_series_data.apply_async(
                         (update['ownerId'], _type.category, _type.resource,),
                         {'date': parser.parse(update['date'])},
