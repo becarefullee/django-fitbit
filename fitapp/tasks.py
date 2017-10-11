@@ -24,40 +24,42 @@ def subscribe(fitbit_user, subscriber_id):
     """ Subscribe to the user's fitbit data """
     fbusers = UserFitbit.objects.filter(fitbit_user=fitbit_user)
     collections = utils.get_setting('FITAPP_SUBSCRIPTION_COLLECTION')
+    if isinstance(collections, str):
+        collections = [collections]
+
     for fbuser in fbusers:
         fb = utils.create_fitbit(**fbuser.get_user_data())
-        if isinstance(collections, str):
-            collections = [collections]
 
-        for single_collection in collections:
+        for collection in collections:
             unique_id = fbuser.uuid
             # should probably put this in a utility function
-            if single_collection == 'foods':
-                unique_id += TimeSeriesDataType.foods
-            elif single_collection == 'activites':
-                unique_id += TimeSeriesDataType.activities
-            elif single_collection == 'sleep':
-                unique_id += TimeSeriesDataType.sleep
-            elif single_collection == 'body':
-                unique_id += TimeSeriesDataType.body
-                
+            if collection == 'foods':
+                unique_id += str(TimeSeriesDataType.foods)
+            elif collection == 'activites':
+                unique_id += str(TimeSeriesDataType.activities)
+            elif collection == 'sleep':
+                unique_id += str(TimeSeriesDataType.sleep)
+            elif collection == 'body':
+                unique_id += str(TimeSeriesDataType.body)
+
             try:
                 print('attempting to create subscription to {} for user {}'.format(
-                        single_collection, fbuser))
-                fb.subscription(unique_id, str(subscriber_id), collection=single_collection)
+                        collection, fbuser))
+                fb.subscription(unique_id, str(subscriber_id), collection=collection)
             except Exception as e:
                 logger.exception("Error subscribing user: %s" % e)
 
 @shared_task
 def unsubscribe(*args, **kwargs):
     """ Unsubscribe from a user's fitbit data """
-
-    collection = utils.get_setting('FITAPP_SUBSCRIPTION_COLLECTION')
+    collections = utils.get_setting('FITAPP_SUBSCRIPTION_COLLECTION')
+    if isinstance(collections, str):
+        collections = [collections]
     # Ignore updated token, it's not needed. The session gets the new token
     # automatically
     fb = utils.create_fitbit(**kwargs)
     try:
-        if isinstance(collection, str):
+        for collection in collections:
             for sub in fb.list_subscriptions(collection=collection)['apiSubscriptions']:
                 if sub['ownerId'] == kwargs['user_id']:
                     # the subscription Id returned by the list subscriptions is
@@ -66,16 +68,6 @@ def unsubscribe(*args, **kwargs):
                     # Note that hyphens might be included in the generated UUID
                     fb.subscription(sub['subscriptionId'].rsplit('-', 1)[0], sub['subscriberId'],
                                     collection=collection, method="DELETE")
-        else:
-            for single_collection in collection:
-                for sub in fb.list_subscriptions(collection=single_collection)['apiSubscriptions']:
-                    if sub['ownerId'] == kwargs['user_id']:
-                        # the subscription Id returned by the list subscriptions is
-                        # "<fbuser.uuid>-<collection>" but here we just need to pass
-                        # <fbuser.uuid> as we are also passing the collection along
-                        # Note that hyphens might be included in the generated UUID
-                        fb.subscription(sub['subscriptionId'].rsplit('-', 1)[0], sub['subscriberId'],
-                                        collection=single_collection, method="DELETE")
     except HTTPUnauthorized:
         # user must have revoked access
         # therefore they're already unsubscribed
