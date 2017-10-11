@@ -22,28 +22,31 @@ LOCK_EXPIRE = 60 * 5  # Lock expires in 5 minutes
 @shared_task
 def subscribe(fitbit_user, subscriber_id):
     """ Subscribe to the user's fitbit data """
-
     fbusers = UserFitbit.objects.filter(fitbit_user=fitbit_user)
-    collection = utils.get_setting('FITAPP_SUBSCRIPTION_COLLECTION')
+    collections = utils.get_setting('FITAPP_SUBSCRIPTION_COLLECTION')
     for fbuser in fbusers:
         fb = utils.create_fitbit(**fbuser.get_user_data())
-        if isinstance(collection, str):
+        if isinstance(collections, str):
+            collections = [collections]
+
+        for single_collection in collections:
+            unique_id = fbuser.uuid
+            # should probably put this in a utility function
+            if single_collection == 'foods':
+                unique_id += TimeSeriesDataType.foods
+            elif single_collection == 'activites':
+                unique_id += TimeSeriesDataType.activities
+            elif single_collection == 'sleep':
+                unique_id += TimeSeriesDataType.sleep
+            elif single_collection == 'body':
+                unique_id += TimeSeriesDataType.body
+                
             try:
-                print('attempting to create single subscription to {} for user {}'.format(collection, fbuser))
-                fb.subscription(fbuser.uuid, str(subscriber_id), collection=collection)
+                print('attempting to create subscription to {} for user {}'.format(
+                        single_collection, fbuser))
+                fb.subscription(unique_id, str(subscriber_id), collection=single_collection)
             except Exception as e:
                 logger.exception("Error subscribing user: %s" % e)
-        else:
-            for single_collection in collection:
-                try:
-                    print(
-                        'attempting to create multiple subscription to {} for user {}'.format(
-                            collection, fbuser))
-                    fb.subscription(fbuser.uuid, str(subscriber_id), collection=single_collection)
-                except Exception as e:
-                    logger.exception("Error subscribing user: %s" % e)
-
-
 
 @shared_task
 def unsubscribe(*args, **kwargs):
