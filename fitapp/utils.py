@@ -83,6 +83,20 @@ def get_fitbit_profile(fbuser, key=None):
     return data
 
 
+def get_subscriptions(fbuser):
+    """Return a list of API responses for each subscription in FITAPP_SUBSCRIPTION_COLLECTION that
+    exists for the given user. """
+    fb = create_fitbit(**fbuser.get_user_data())
+    collections = get_setting('FITAPP_SUBSCRIPTION_COLLECTION')
+    if isinstance(collections, str):
+        collections = [collections]
+
+    subscriptions = []
+    for collection in collections:
+        subscriptions.add(fb.list_subscriptions(collection=collection))
+    return subscriptions
+
+
 def get_setting(name, use_defaults=True):
     """Retrieves the specified setting from the settings file.
 
