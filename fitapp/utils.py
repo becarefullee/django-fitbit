@@ -93,7 +93,7 @@ def get_subscriptions(fbuser):
 
     subscriptions = []
     for collection in collections:
-        subscriptions.add(fb.list_subscriptions(collection=collection))
+        subscriptions.append(fb.list_subscriptions(collection=collection))
     return subscriptions
 
 
