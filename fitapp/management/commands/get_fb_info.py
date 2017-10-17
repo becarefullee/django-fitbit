@@ -12,7 +12,7 @@ from django.core.management.base import BaseCommand
 from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
 
 from fitapp.models import UserFitbit, TimeSeriesDataType
-from fitapp.utils import create_fitbit
+from fitapp.utils import create_fitbit, get_subscriptions
 from fitapp.tasks import get_time_series_data
 
 
@@ -61,7 +61,7 @@ class Command(BaseCommand):
             pprint.pprint(device)
 
         print("\nSUBSCRIPTIONS:")
-        pprint.pprint(fitbit.list_subscriptions(collection='activities'))
+        pprint.pprint(get_subscriptions(user_fitbit))
 
         print("\nPULLING STEP DATA:")
         tsd = TimeSeriesDataType.objects.get(
