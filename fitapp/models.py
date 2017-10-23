@@ -5,6 +5,8 @@ from django.conf import settings
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
+from .utils import create_fitbit, get_setting
+
 
 UserModel = getattr(settings, 'FITAPP_USER_MODEL', 'auth.User')
 
@@ -47,6 +49,24 @@ class UserFitbit(models.Model):
             'refresh_cb': self.refresh_cb,
             'uuid': self.uuid,
         }
+
+    def get_subscriptions(self):
+        """
+        Return a list of the subscriptions in the project's collection list that exist for the UFB.
+
+        This is needed because a call to the Fitbit API can only return subscriptions for one
+        collection at a time, or it attempts to return subscriptions for all possible collections,
+        which causes an unauthorized error if a project doesn't have access to all collections.
+        """
+        fb = create_fitbit(**self.get_user_data())
+        collections = get_setting('FITAPP_SUBSCRIPTION_COLLECTION')
+        if isinstance(collections, str):
+            collections = [collections]
+
+        subscriptions = []
+        for collection in collections:
+            subscriptions.extend(fb.list_subscriptions(collection=collection)['apiSubscriptions'])
+        return subscriptions
 
     def save(self, *args, **kwargs):
         if not self.uuid:
