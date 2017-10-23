@@ -5,8 +5,6 @@ from django.conf import settings
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
-from .utils import create_fitbit, get_setting
-
 
 UserModel = getattr(settings, 'FITAPP_USER_MODEL', 'auth.User')
 
@@ -58,6 +56,8 @@ class UserFitbit(models.Model):
         collection at a time, or it attempts to return subscriptions for all possible collections,
         which causes an unauthorized error if a project doesn't have access to all collections.
         """
+        from .utils import create_fitbit, get_setting
+
         fb = create_fitbit(**self.get_user_data())
         collections = get_setting('FITAPP_SUBSCRIPTION_COLLECTION')
         if isinstance(collections, str):
