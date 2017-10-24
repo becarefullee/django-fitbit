@@ -64,9 +64,12 @@ class UserFitbit(models.Model):
             collections = [collections]
 
         subscriptions = []
-        for collection in collections:
-            subscriptions.extend(fb.list_subscriptions(collection=collection)['apiSubscriptions'])
-        return subscriptions
+        try:
+            for collection in collections:
+                subscriptions.extend(fb.list_subscriptions(collection=collection)['apiSubscriptions'])
+            return subscriptions
+        except Exception as e:
+            return e
 
     def save(self, *args, **kwargs):
         if not self.uuid:
