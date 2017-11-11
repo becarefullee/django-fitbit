@@ -1,3 +1,4 @@
+import logging
 import uuid
 from base64 import urlsafe_b64encode
 
@@ -5,6 +6,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
+logger = logging.getLogger(__name__)
 
 UserModel = getattr(settings, 'FITAPP_USER_MODEL', 'auth.User')
 
@@ -64,12 +66,18 @@ class UserFitbit(models.Model):
             collections = [collections]
 
         subscriptions = []
-        try:
-            for collection in collections:
-                subscriptions.extend(fb.list_subscriptions(collection=collection)['apiSubscriptions'])
-            return subscriptions
-        except Exception as e:
-            return e
+
+        for collection in collections:
+            try:
+                subscriptions.extend(
+                    fb.list_subscriptions(collection=collection)['apiSubscriptions'])
+            except Exception as e:
+                logger.exception(e)
+                subscriptions.append(
+                    'An error occurred while listing subscriptions '
+                    'for the {} collection'.format(collection))
+
+        return subscriptions
 
     def save(self, *args, **kwargs):
         if not self.uuid:
