@@ -22,35 +22,40 @@ LOCK_EXPIRE = 60 * 5  # Lock expires in 5 minutes
 @shared_task
 def subscribe(fitbit_user, subscriber_id):
     """ Subscribe to the user's fitbit data """
-
     fbusers = UserFitbit.objects.filter(fitbit_user=fitbit_user)
-    collection = utils.get_setting('FITAPP_SUBSCRIPTION_COLLECTION')
+    collections = utils.get_setting('FITAPP_SUBSCRIPTION_COLLECTION')
+    if isinstance(collections, str):
+        collections = [collections]
+
     for fbuser in fbusers:
         fb = utils.create_fitbit(**fbuser.get_user_data())
-        try:
-            fb.subscription(fbuser.uuid, str(subscriber_id), collection=collection)
-        except Exception as e:
-            logger.exception("Error subscribing user: %s" % e)
-            raise Reject(e, requeue=False)
-
+        for collection in collections:
+            unique_id = fbuser.uuid + str(getattr(TimeSeriesDataType, collection))
+            try:
+                fb.subscription(unique_id, str(subscriber_id), collection=collection)
+            except Exception as e:
+                logger.exception("Error subscribing user: %s" % e)
 
 @shared_task
 def unsubscribe(*args, **kwargs):
     """ Unsubscribe from a user's fitbit data """
-
-    collection = utils.get_setting('FITAPP_SUBSCRIPTION_COLLECTION')
+    collections = utils.get_setting('FITAPP_SUBSCRIPTION_COLLECTION')
+    if isinstance(collections, str):
+        collections = [collections]
     # Ignore updated token, it's not needed. The session gets the new token
     # automatically
     fb = utils.create_fitbit(**kwargs)
+
     try:
-        for sub in fb.list_subscriptions(collection=collection)['apiSubscriptions']:
-            if sub['ownerId'] == kwargs['user_id']:
-                # the subscription Id returned by the list subscriptions is
-                # "<fbuser.uuid>-<collection>" but here we just need to pass
-                # <fbuser.uuid> as we are also passing the collection along
-                # Note that hyphens might be included in the generated UUID
-                fb.subscription(sub['subscriptionId'].rsplit('-', 1)[0], sub['subscriberId'],
-                                collection=collection, method="DELETE")
+        for collection in collections:
+            for sub in fb.list_subscriptions(collection=collection)['apiSubscriptions']:
+                if sub['ownerId'] == kwargs['user_id']:
+                    # the subscription Id returned by the list subscriptions is
+                    # "<fbuser.uuid>-<collection>" but here we just need to pass
+                    # <fbuser.uuid> as we are also passing the collection along
+                    # Note that hyphens might be included in the generated UUID
+                    fb.subscription(sub['subscriptionId'].rsplit('-', 1)[0], sub['subscriberId'],
+                                    collection=collection, method="DELETE")
     except HTTPUnauthorized:
         # user must have revoked access
         # therefore they're already unsubscribed
@@ -65,7 +70,6 @@ def unsubscribe(*args, **kwargs):
 @shared_task(bind=True)
 def get_time_series_data(self, fitbit_user, cat, resource, date=None):
     """ Get the user's time series data """
-
     try:
         _type = TimeSeriesDataType.objects.get(category=cat, resource=resource)
     except TimeSeriesDataType.DoesNotExist as e:
@@ -82,44 +86,41 @@ def get_time_series_data(self, fitbit_user, cat, resource, date=None):
         raise Ignore()
 
     try:
-        with transaction.atomic():
-            # Block until we have exclusive update access to this UserFitbit, so
-            # that another process cannot step on us when we update tokens
-            fbusers = UserFitbit.objects.select_for_update().filter(
-                fitbit_user=fitbit_user)
-            default_period = utils.get_setting('FITAPP_DEFAULT_PERIOD')
-            if default_period:
-                dates = {'base_date': 'today', 'period':default_period}
-            else:
-                dates = {'base_date': 'today', 'period': 'max'}
-            if date:
-                dates = {'base_date': date, 'end_date': date}
-            for fbuser in fbusers:
-                data = utils.get_fitbit_data(fbuser, _type, **dates)
-                if utils.get_setting('FITAPP_GET_INTRADAY'):
-                    tz_offset = utils.get_fitbit_profile(fbuser,
-                                                         'offsetFromUTCMillis')
-                    tz_offset = tz_offset / 3600 / 1000 * -1  # Converted to positive hours
-                for datum in data:
-                    # Create new record or update existing record
-                    date = parser.parse(datum['dateTime'])
-                    if _type.intraday_support and \
-                            utils.get_setting('FITAPP_GET_INTRADAY'):
-                        resources = TimeSeriesDataType.objects.filter(
-                            intraday_support=True)
-                        for i, _type in enumerate(resources):
-                            # Offset each call by 2 seconds so they don't bog down
-                            # the server
-                            get_intraday_data(
-                                fbuser.fitbit_user, _type.category,
-                                _type.resource, date, tz_offset)
-                    tsd, created = TimeSeriesData.objects.get_or_create(
-                        user=fbuser.user, resource_type=_type, date=date,
-                        intraday=False)
-                    tsd.value = datum['value']
-                    tsd.save()
-            # Release the lock
-            cache.delete(lock_id)
+        fbusers = UserFitbit.objects.filter(
+            fitbit_user=fitbit_user)
+        default_period = utils.get_setting('FITAPP_DEFAULT_PERIOD')
+        if default_period:
+            dates = {'base_date': 'today', 'period':default_period}
+        else:
+            dates = {'base_date': 'today', 'period': 'max'}
+        if date:
+            dates = {'base_date': date, 'end_date': date}
+        for fbuser in fbusers:
+            data = utils.get_fitbit_data(fbuser, _type, **dates)
+            if utils.get_setting('FITAPP_GET_INTRADAY'):
+                tz_offset = utils.get_fitbit_profile(fbuser,
+                                                     'offsetFromUTCMillis')
+                tz_offset = tz_offset / 3600 / 1000 * -1  # Converted to positive hours
+            for datum in data:
+                # Create new record or update existing record
+                date = parser.parse(datum['dateTime'])
+                if _type.intraday_support and \
+                        utils.get_setting('FITAPP_GET_INTRADAY'):
+                    resources = TimeSeriesDataType.objects.filter(
+                        intraday_support=True)
+                    for i, _type in enumerate(resources):
+                        # Offset each call by 2 seconds so they don't bog down
+                        # the server
+                        get_intraday_data(
+                            fbuser.fitbit_user, _type.category,
+                            _type.resource, date, tz_offset)
+                tsd, created = TimeSeriesData.objects.get_or_create(
+                    user=fbuser.user, resource_type=_type, date=date,
+                    intraday=False)
+                tsd.value = datum['value']
+                tsd.save()
+        # Release the lock
+        cache.delete(lock_id)
     except HTTPTooManyRequests as e:
         # We have hit the rate limit for the user, retry when it's reset,
         # according to the reply from the failing API call

@@ -61,7 +61,7 @@ class Command(BaseCommand):
             pprint.pprint(device)
 
         print("\nSUBSCRIPTIONS:")
-        pprint.pprint(fitbit.list_subscriptions(collection='activities'))
+        pprint.pprint(user_fitbit.get_subscriptions())
 
         print("\nPULLING STEP DATA:")
         tsd = TimeSeriesDataType.objects.get(
