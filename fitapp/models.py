@@ -172,3 +172,20 @@ class TimeSeriesData(models.Model):
 
 class TestUserModel(models.Model):
     pass
+
+
+class SleepStageTimeSeriesData(models.Model):
+    user = models.ForeignKey(UserModel, help_text="The data's user")
+    date = models.DateTimeField(help_text='The date the data was recorded')
+    level = models.CharField(null=False, max_length=32, help_text='Sleep stages')
+    seconds = models.IntegerField(help_text='The amount of time last for this sleep period')
+
+    class Meta:
+        unique_together = ('user', 'date')
+        ordering = ['-date']
+        get_latest_by = 'date'
+
+    def __str__(self):
+        return '{level} sleep start from {date} last {second} seconds.'.format(date=self.date,
+                                                                               level=self.level, second=self.seconds)
+

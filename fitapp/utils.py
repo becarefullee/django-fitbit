@@ -1,11 +1,14 @@
+import sys
+
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
 from fitbit import Fitbit
+from fitbit.exceptions import HTTPBadRequest, HTTPTooManyRequests, HTTPUnauthorized
+
 
 from . import defaults
-from .models import UserFitbit, TimeSeriesDataType
-
+from .models import UserFitbit, TimeSeriesDataType, SleepStageTimeSeriesData
 
 def create_fitbit(consumer_key=None, consumer_secret=None, **kwargs):
     """Shortcut to create a Fitbit instance.
@@ -26,7 +29,7 @@ def create_fitbit(consumer_key=None, consumer_secret=None, **kwargs):
         )
     fitbit = Fitbit(consumer_key, consumer_secret, **kwargs)
     fitbit.API_VERSION = 1.2
-    return
+    return fitbit
 
 
 def is_integrated(user):
@@ -63,6 +66,7 @@ def get_fitbit_data(fbuser, resource_type, base_date=None, period=None,
     """
     fb = create_fitbit(**fbuser.get_user_data())
     resource_path = resource_type.path()
+    print(resource_path)
     data = fb.time_series(resource_path, user_id=fbuser.fitbit_user,
                           period=period, base_date=base_date,
                           end_date=end_date)
@@ -122,3 +126,50 @@ def _verified_setting(name):
                     list(set(res) - (set(res) & all_cat_res)), cat)
                 raise ImproperlyConfigured(msg)
     return result
+
+
+def get_all_sleep_log(date):
+    fbusers = UserFitbit.objects.all()
+    try:
+        for fbuser in fbusers:
+            get_fitbit_sleep_log(fbuser=fbuser, date=date)
+    except HTTPTooManyRequests:
+        # We have hit the rate limit for the user, retry when it's reset,
+        # according to the reply from the failing API call
+        print('Rate limit reached for user {}'.format(fbuser))
+    except HTTPBadRequest:
+        # If the resource is elevation or floors, we are just getting this
+        # error because the data doesn't exist for this user, so we can ignore
+        # the error
+        e = sys.exc_info()[1]
+        print('{}'.format(e))
+    except Exception:
+        e = sys.exc_info()[1]
+        print('{}'.format(e))
+
+
+def get_fitbit_sleep_log(fbuser, date):
+    """
+    Create a Fitbit API instance and retrieves sleep log of a day.
+    """
+    fb = create_fitbit(**fbuser.get_user_data())
+    data = fb.get_sleep(date)
+    parse_sleep_data(fbuser=fbuser, json_data=data)
+
+
+def parse_sleep_data(fbuser, json_data, summary=False):
+    sleep_data = json_data['sleep']
+    if sleep_data:
+        # print(sleep_data[0])
+        if summary:
+            summary_data = sleep_data[0]['levels']['summary']
+            # print(summary_data)
+        else:
+            short_data = sleep_data[0]['levels']['data']
+            # print(short_data)
+            for data in short_data:
+                # Create new record or update existing
+                tsd, created = SleepStageTimeSeriesData.objects.get_or_create(
+                    user=fbuser.user, date=data['dateTime'],
+                    level=data['level'], second=data['seconds'])
+                tsd.save()

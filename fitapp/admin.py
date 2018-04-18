@@ -58,3 +58,4 @@ class UserFitbitAdmin(admin.ModelAdmin):
 admin.site.register(models.UserFitbit, UserFitbitAdmin)
 admin.site.register(models.TimeSeriesDataType)
 admin.site.register(models.TimeSeriesData)
+admin.site.register(models.SleepStageTimeSeriesData)
