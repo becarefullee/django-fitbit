@@ -130,6 +130,7 @@ def _verified_setting(name):
 
 def get_all_sleep_log(date):
     fbusers = UserFitbit.objects.all()
+    print('Fitbit Users: {}'.format(fbusers))
     try:
         for fbuser in fbusers:
             get_fitbit_sleep_log(fbuser=fbuser, date=date)
@@ -142,10 +143,10 @@ def get_all_sleep_log(date):
         # error because the data doesn't exist for this user, so we can ignore
         # the error
         e = sys.exc_info()[1]
-        print('{}'.format(e))
+        print('Bad request: {}'.format(e))
     except Exception:
         e = sys.exc_info()[1]
-        print('{}'.format(e))
+        print('Exception: {}'.format(e))
 
 
 def get_fitbit_sleep_log(fbuser, date):
@@ -160,16 +161,17 @@ def get_fitbit_sleep_log(fbuser, date):
 def parse_sleep_data(fbuser, json_data, summary=False):
     sleep_data = json_data['sleep']
     if sleep_data:
-        # print(sleep_data[0])
+        print(sleep_data[0])
         if summary:
             summary_data = sleep_data[0]['levels']['summary']
             # print(summary_data)
         else:
             short_data = sleep_data[0]['levels']['data']
-            # print(short_data)
+            print(short_data)
             for data in short_data:
                 # Create new record or update existing
                 tsd, created = SleepStageTimeSeriesData.objects.get_or_create(
                     user=fbuser.user, date=data['dateTime'],
                     level=data['level'], second=data['seconds'])
                 tsd.save()
+                print(created)
