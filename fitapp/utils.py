@@ -172,6 +172,6 @@ def parse_sleep_data(fbuser, json_data, summary=False):
                 # Create new record or update existing
                 tsd, created = SleepStageTimeSeriesData.objects.get_or_create(
                     user=fbuser.user, date=data['dateTime'],
-                    level=data['level'], second=data['seconds'])
+                    level=data['level'], seconds=data['seconds'])
                 tsd.save()
                 print(created)
