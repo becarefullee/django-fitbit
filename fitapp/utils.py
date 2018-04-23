@@ -6,9 +6,9 @@ from django.core.exceptions import ImproperlyConfigured
 from fitbit import Fitbit
 from fitbit.exceptions import HTTPBadRequest, HTTPTooManyRequests, HTTPUnauthorized
 
-
 from . import defaults
 from .models import UserFitbit, TimeSeriesDataType, SleepStageTimeSeriesData
+
 
 def create_fitbit(consumer_key=None, consumer_secret=None, **kwargs):
     """Shortcut to create a Fitbit instance.
@@ -48,7 +48,7 @@ def get_valid_periods():
 
 
 def get_fitbit_data(fbuser, resource_type, base_date=None, period=None,
-        end_date=None, return_all=False):
+                    end_date=None, return_all=False):
     """Creates a Fitbit API instance and retrieves step data for the period.
 
     Several exceptions may be thrown:
@@ -149,6 +149,21 @@ def get_all_sleep_log(date):
         print('Exception: {}'.format(e))
 
 
+def get_sleep_log_by_date_range(fbuser, start_date, end_date):
+    fb = create_fitbit(**fbuser.get_user_data())
+    start_date_string = fb._get_date_string(start_date)
+    end_date_string = fb._get_date_string(end_date)
+    url = "{0}/{1}/user/-/sleep/date/" \
+          "{start_date}/{end_date}.json" \
+        .format(*fb._get_common_args(),
+                start_date=start_date_string,
+                end_date=end_date_string
+                )
+    data = fb.make_request(url)
+    sleep_data = data['sleep']
+    parse_sleep_data(fbuser=fbuser, json_data=sleep_data)
+
+
 def get_fitbit_sleep_log(fbuser, date):
     """
     Create a Fitbit API instance and retrieves sleep log of a day.
@@ -158,20 +173,34 @@ def get_fitbit_sleep_log(fbuser, date):
     parse_sleep_data(fbuser=fbuser, json_data=data)
 
 
+# def parse_sleep_data(fbuser, json_data, summary=False):
+#     sleep_data = json_data['sleep']
+#     if sleep_data:
+#         print(sleep_data[0])
+#         if summary:
+#             summary_data = sleep_data[0]['levels']['summary']
+#         else:
+#             short_data = sleep_data[0]['levels']['data']
+#             print(short_data)
+#             for data in short_data:
+#                 # Create new record or update existing
+#                 tsd, created = SleepStageTimeSeriesData.objects.get_or_create(
+#                     user=fbuser.user, date=data['dateTime'],
+#                     level=data['level'], seconds=data['seconds'])
+#                 tsd.save()
+
+
 def parse_sleep_data(fbuser, json_data, summary=False):
     sleep_data = json_data['sleep']
     if sleep_data:
-        print(sleep_data[0])
-        if summary:
-            summary_data = sleep_data[0]['levels']['summary']
-            # print(summary_data)
-        else:
-            short_data = sleep_data[0]['levels']['data']
-            print(short_data)
-            for data in short_data:
-                # Create new record or update existing
-                tsd, created = SleepStageTimeSeriesData.objects.get_or_create(
-                    user=fbuser.user, date=data['dateTime'],
-                    level=data['level'], seconds=data['seconds'])
-                tsd.save()
-                print(created)
+        for intraday in sleep_data:
+            if summary:
+                summary_data = intraday['levels']['summary']
+            else:
+                short_data = intraday['levels']['data']
+                for data in short_data:
+                    # Create new record or update existing
+                    tsd, created = SleepStageTimeSeriesData.objects.get_or_create(
+                        user=fbuser.user, date=data['dateTime'],
+                        level=data['level'], seconds=data['seconds'])
+                    tsd.save()
