@@ -160,8 +160,7 @@ def get_sleep_log_by_date_range(fbuser, start_date, end_date):
                 end_date=end_date_string
                 )
     data = fb.make_request(url)
-    sleep_data = data['sleep']
-    parse_sleep_data(fbuser=fbuser, json_data=sleep_data)
+    parse_sleep_data(fbuser=fbuser, json_data=data)
 
 
 def get_fitbit_sleep_log(fbuser, date):
