@@ -7,7 +7,7 @@ from fitbit import Fitbit
 from fitbit.exceptions import HTTPBadRequest, HTTPTooManyRequests, HTTPUnauthorized
 
 from . import defaults
-from .models import UserFitbit, TimeSeriesDataType, SleepStageTimeSeriesData
+from .models import UserFitbit, TimeSeriesDataType, SleepStageTimeSeriesData, SleepStageSummary, SleepTypeData
 
 
 def create_fitbit(consumer_key=None, consumer_secret=None, **kwargs):
@@ -163,26 +163,36 @@ def get_sleep_log_by_date_range(fbuser, start_date, end_date):
     parse_sleep_data(fbuser=fbuser, json_data=data)
 
 
-def get_fitbit_sleep_log(fbuser, date):
+def get_fitbit_sleep_log(fbuser, date, summary=False):
     """
     Create a Fitbit API instance and retrieves sleep log of a day.
     """
     fb = create_fitbit(**fbuser.get_user_data())
     data = fb.get_sleep(date)
-    parse_sleep_data(fbuser=fbuser, json_data=data)
+    parse_sleep_data(fbuser=fbuser, json_data=data, summary=summary)
 
 
 def parse_sleep_data(fbuser, json_data, summary=False):
     sleep_data = json_data['sleep']
     if sleep_data:
         for intraday in sleep_data:
+            date_of_sleep = intraday['dateOfSleep']
             if summary:
                 summary_data = intraday['levels']['summary']
+                keys = ['wake', 'rem', 'light', 'deep']
+                sleep_summary_object, _ = SleepStageSummary.objects.get_or_create(user=fbuser.user, date=date_of_sleep)
+                sleep_summary_object.save()
+                for key in keys:
+                    count = summary_data[key]['count'] if summary_data[key]['count'] else 0
+                    minute = summary_data[key]['minutes'] if summary_data[key]['minutes'] else 0
+                    sleep_summary_data, created = SleepTypeData.objects.get_or_create(
+                        sleep_summary=sleep_summary_object, level=key, count=count, minute=minute)
+                    sleep_summary_data.save()
             else:
                 short_data = intraday['levels']['data']
                 for data in short_data:
                     # Create new record or update existing
-                    tsd, created = SleepStageTimeSeriesData.objects.get_or_create(
+                    sleep_time_series_data, created = SleepStageTimeSeriesData.objects.get_or_create(
                         user=fbuser.user, date=data['dateTime'],
                         level=data['level'], seconds=data['seconds'])
-                    tsd.save()
+                    sleep_time_series_data.save()
