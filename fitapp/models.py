@@ -189,3 +189,14 @@ class SleepStageTimeSeriesData(models.Model):
         return '{level} start from {date} last {seconds} seconds.'.format(
             date=self.date, level=self.level, seconds=self.seconds)
 
+
+class SleepStageSummary(models.Model):
+    user = models.ForeignKey(UserModel, help_text="The data's user")
+    date = models.DateTimeField(help_text='The date the data was recorded')
+
+
+class SleepTypeData(models.Model):
+    sleep_summary = models.ForeignKey(SleepStageSummary, help_text='The summary object that this sleep associated with')
+    level = models.CharField(null=False, max_length=32, help_text='Sleep stages')
+    count = models.IntegerField(help_text='Number of this type of sleep status')
+    minute = models.IntegerField(help_text='How long this type of sleep last in total')

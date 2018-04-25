@@ -172,23 +172,6 @@ def get_fitbit_sleep_log(fbuser, date):
     parse_sleep_data(fbuser=fbuser, json_data=data)
 
 
-# def parse_sleep_data(fbuser, json_data, summary=False):
-#     sleep_data = json_data['sleep']
-#     if sleep_data:
-#         print(sleep_data[0])
-#         if summary:
-#             summary_data = sleep_data[0]['levels']['summary']
-#         else:
-#             short_data = sleep_data[0]['levels']['data']
-#             print(short_data)
-#             for data in short_data:
-#                 # Create new record or update existing
-#                 tsd, created = SleepStageTimeSeriesData.objects.get_or_create(
-#                     user=fbuser.user, date=data['dateTime'],
-#                     level=data['level'], seconds=data['seconds'])
-#                 tsd.save()
-
-
 def parse_sleep_data(fbuser, json_data, summary=False):
     sleep_data = json_data['sleep']
     if sleep_data:
