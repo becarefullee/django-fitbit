@@ -198,7 +198,8 @@ class SleepStageSummary(models.Model):
         ordering = ['-date']
 
     def __str__(self):
-        return "{user}'s sleep summary on {date}".format(user=self.user, date=self.date)
+        return "{user}'s sleep summary on {year}-{month}-{day}".format(
+            user=self.user, year=self.date.year, month=self.date.month, day=self.date.day)
 
     @property
     def get_summary_data(self):
@@ -216,6 +217,7 @@ class SleepTypeData(models.Model):
         unique_together = ('sleep_summary', 'level',)
 
     def __str__(self):
-        return "{user}'s {level} level summary on {date}".format(
+        return "{user}'s {level} level summary on {year}-{month}-{day}".format(
             user=self.sleep_summary.user,
-            level=self.level, date=self.sleep_summary.date)
+            level=self.level, year=self.sleep_summary.date.year,
+            month=self.sleep_summary.date.month, day=self.sleep_summary.date.day)
