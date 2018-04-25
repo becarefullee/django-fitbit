@@ -194,9 +194,29 @@ class SleepStageSummary(models.Model):
     user = models.ForeignKey(UserModel, help_text="The data's user")
     date = models.DateTimeField(help_text='The date the data was recorded')
 
+    class Meta:
+        ordering = ['-date']
+
+    def __str__(self):
+        return "{user}'s sleep summary on {date}".format(user=self.user, date=self.date)
+
+    @property
+    def get_summary_data(self):
+        return list(SleepTypeData.objects.filter(sleep_summary=self))
+
 
 class SleepTypeData(models.Model):
-    sleep_summary = models.ForeignKey(SleepStageSummary, help_text='The summary object that this sleep associated with')
+    sleep_summary = models.ForeignKey(SleepStageSummary,
+                                      help_text='The summary object that this sleep associated with')
     level = models.CharField(null=False, max_length=32, help_text='Sleep stages')
     count = models.IntegerField(help_text='Number of this type of sleep status')
     minute = models.IntegerField(help_text='How long this type of sleep last in total')
+
+    class Meta:
+        order_with_respect_to = 'sleep_summary'
+        unique_together = ('sleep_summary', 'level',)
+
+    def __str__(self):
+        return "{user}'s {level} level summary on {date}".format(
+            user=self.sleep_summary.user,
+            level=self.level, date=self.sleep_summary.date)
