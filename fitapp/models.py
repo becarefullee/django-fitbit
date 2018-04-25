@@ -213,7 +213,6 @@ class SleepTypeData(models.Model):
     minute = models.IntegerField(help_text='How long this type of sleep last in total')
 
     class Meta:
-        order_with_respect_to = 'sleep_summary'
         unique_together = ('sleep_summary', 'level',)
 
     def __str__(self):
