@@ -175,6 +175,12 @@ class TestUserModel(models.Model):
 
 
 class SleepStageTimeSeriesData(models.Model):
+    """
+    This model is intended to store sleep stage logs obtained from Fitbit API
+    
+    Sleep log API:
+    https://dev.fitbit.com/build/reference/web-api/sleep/
+    """
     user = models.ForeignKey(UserModel, help_text="The data's user")
     date = models.DateTimeField(help_text='The date and time the data was recorded')
     level = models.CharField(null=False, max_length=32, help_text='Sleep stages')
@@ -186,16 +192,30 @@ class SleepStageTimeSeriesData(models.Model):
         get_latest_by = 'date'
 
     def __str__(self):
-        return '{level} start from {date} last {seconds} seconds.'.format(
-            date=self.date, level=self.level, seconds=self.seconds)
+        if self.level == 'wake':
+            return '{user} is awake from {date} last {seconds} seconds'.format(
+                user=self.user, date=self.date, level=self.level, seconds=self.seconds
+            )
+        else:
+            return '{user} is {level} sleep start from {date} last {seconds} seconds.'.format(
+                user=self.user, date=self.date, level=self.level, seconds=self.seconds
+            )
 
 
 class SleepStageSummary(models.Model):
+    """
+    This model is intended to store the summary of sleep stage logs.
+    
+    This model has a one to many relationship to SleepTypeData. In fact, every valid 
+    SleepStageSummary instance should has four different SleepTypeData which represents 
+    the summary of wake/rem/light/deep level's sleep log.
+    """
     user = models.ForeignKey(UserModel, help_text="The data's user")
     date = models.DateTimeField(help_text='The date the data was recorded')
 
     class Meta:
         ordering = ['-date']
+        unique_together = ('user', 'date')
 
     def __str__(self):
         return "{user}'s sleep summary on {year}-{month}-{day}".format(
@@ -207,6 +227,12 @@ class SleepStageSummary(models.Model):
 
 
 class SleepTypeData(models.Model):
+    """
+    This model is intended to store the summary of a certain level(wake/rem/light/deep) sleep log.
+    
+    Each SleepTypeData instance will associate with a SleepStageSummary instance to represent as the 
+     summary of a certain level's sleep for a user on some day.
+    """
     sleep_summary = models.ForeignKey(SleepStageSummary,
                                       help_text='The summary object that this sleep associated with')
     level = models.CharField(null=False, max_length=32, help_text='Sleep stages')
@@ -214,7 +240,8 @@ class SleepTypeData(models.Model):
     minute = models.IntegerField(help_text='How long this type of sleep last in total')
 
     class Meta:
-        unique_together = ('sleep_summary', 'level',)
+        unique_together = ('sleep_summary', 'level')
+        ordering = ['sleep_summary']
 
     def __str__(self):
         return "{user}'s {level} level summary on {year}-{month}-{day}".format(

@@ -7,7 +7,8 @@ from fitbit import Fitbit
 from fitbit.exceptions import HTTPBadRequest, HTTPTooManyRequests, HTTPUnauthorized
 
 from . import defaults
-from .models import UserFitbit, TimeSeriesDataType, SleepStageTimeSeriesData, SleepStageSummary, SleepTypeData
+from .models import UserFitbit, TimeSeriesDataType, SleepStageTimeSeriesData,\
+    SleepStageSummary, SleepTypeData
 
 
 def create_fitbit(consumer_key=None, consumer_secret=None, **kwargs):
@@ -129,6 +130,13 @@ def _verified_setting(name):
 
 
 def get_all_sleep_log(date):
+    """
+    Get all user's sleep log at a certain date.
+    
+    :param date: The date of the sleep log (datetime).
+    
+    Throw exceptions if an error occurs during the request. 
+    """
     fbusers = UserFitbit.objects.all()
     print('Fitbit Users: {}'.format(fbusers))
     try:
@@ -150,6 +158,13 @@ def get_all_sleep_log(date):
 
 
 def get_sleep_log_by_date_range(fbuser, start_date, end_date):
+    """
+    Get the sleep logs of a user during a date range.
+    
+    :param fbuser: A UserFitbit instance (UserFitbit).
+    :param start_date: sleep logs start date (datetime).
+    :param end_date: sleep logs end date (datetime).
+    """
     fb = create_fitbit(**fbuser.get_user_data())
     start_date_string = fb._get_date_string(start_date)
     end_date_string = fb._get_date_string(end_date)
@@ -165,7 +180,13 @@ def get_sleep_log_by_date_range(fbuser, start_date, end_date):
 
 def get_fitbit_sleep_log(fbuser, date, summary=False):
     """
-    Create a Fitbit API instance and retrieves sleep log of a day.
+    This method calls get_sleep(date) method of a Fitbit instance to get the sleep log, 
+    parse the json data and save it to database after that. This method can be used to get either sleep time 
+    series data or the sleep summary log if summary param is True.
+    
+    :param fbuser: A UserFitbit instance (UserFitbit).
+    :param date: The date of the log (datetime).
+    :param summary: Whether it should be a sleep summary data, set False by default (Bool).
     """
     fb = create_fitbit(**fbuser.get_user_data())
     data = fb.get_sleep(date)
@@ -173,6 +194,13 @@ def get_fitbit_sleep_log(fbuser, date, summary=False):
 
 
 def parse_sleep_data(fbuser, json_data, summary=False):
+    """
+    Parse the json data get from Fitbit API, if the data is valid, save it to database.
+    
+    :param fbuser: A UserFibit instance (UserFitbit).
+    :param json_data: Json data that get from Fitbit API 
+    :param summary: Whether it should be a sleep summary data, set False by default (Bool).
+    """
     sleep_data = json_data['sleep']
     if sleep_data:
         for intraday in sleep_data:
